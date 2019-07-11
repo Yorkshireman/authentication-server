@@ -1,15 +1,15 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_request, only: %i[login register]
 
-  def login
-    authenticate params[:email], params[:password]
-  end
-
-  def test
+  def index
     render json: {
       message: 'You have passed authentication and authorisation test',
       user_id: @current_user.id
     }
+  end
+
+  def login
+    authenticate params[:email], params[:password]
   end
 
   def register
