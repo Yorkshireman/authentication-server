@@ -1,0 +1,13 @@
+{
+  "name": "authentication-server",
+  "repository": "https://github.com/yorkshireman/authentication-server",
+  "scripts": {
+    "postdeploy": "rake db:migrate"
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "env": {
+    "BUILDPACK_URL": "heroku/ruby"
+  }
+}
