@@ -3,6 +3,6 @@ namespace :server do
   task start: :environment do
     sh %{ rails db:seed }
     trap('SIGINT') { exit }
-    sh %{ rails s }
+    sh %{ rails s -p 3100 }
   end
 end
