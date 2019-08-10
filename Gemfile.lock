@@ -81,6 +81,7 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.10.2)
       mini_portile2 (~> 2.4.0)
+    pg (1.1.4)
     puma (3.12.1)
     rack (2.0.7)
     rack-cors (1.0.3)
@@ -128,7 +129,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.4.0)
     thor (0.20.3)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
@@ -147,13 +147,13 @@ DEPENDENCIES
   dotenv-rails
   jwt
   listen (>= 3.0.5, < 3.2)
+  pg
   puma (~> 3.11)
   rack-cors
   rails (~> 5.2.3)
   simple_command
   spring
   spring-watcher-listen (~> 2.0.0)
-  sqlite3
   tzinfo-data
 
 RUBY VERSION
