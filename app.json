@@ -1,8 +1,6 @@
 {
   "name": "authentication-server",
-  "scripts": {
-    "postdeploy": "rake db:migrate"
-  },
+  "scripts": {},
   "env": {},
   "formation": {
     "web": {
