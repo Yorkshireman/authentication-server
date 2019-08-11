@@ -1,7 +1,9 @@
 {
   "name": "authentication-server",
   "scripts": {},
-  "env": {},
+  "env": {
+    "FRONTEND_CLIENT_URL": "https://some-url.com"
+  },
   "formation": {
     "web": {
       "quantity": 1
