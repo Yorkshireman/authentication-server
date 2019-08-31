@@ -1,4 +1,4 @@
-require 'rails_helper' # frozen_string_literal: true
+require 'rails_helper'
 
 RSpec.describe 'GET / response', type: :request do
   before :each do
@@ -17,7 +17,9 @@ RSpec.describe 'GET / response', type: :request do
     expect(response).to have_http_status(200)
   end
 
-  it 'has correct body' do # However, we won't do this for actual responses - JSON API Spec dictates not sending messages like this at all really, but defo not inside a data object which should be reserved for resources
+  # However, we won't do this for actual responses - JSON API Spec dictates not sending
+  # messages like this at all really, but defo not inside a data object which should be reserved for resources
+  it 'has correct body' do
     expected_json = JSON.generate({
       data: {
         message: 'Hello World'

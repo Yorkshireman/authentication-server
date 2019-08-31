@@ -9,8 +9,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'http://localhost:3000',
             /https:\/\/[a-z0-9-]+.herokuapp.com/
-    resource '*',
-      headers: :any,
-      methods: [:post, :options]
+    resource  '*',
+              headers: :any,
+              methods: [:post, :options]
   end
 end
