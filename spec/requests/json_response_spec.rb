@@ -9,7 +9,7 @@ RSpec.describe 'GET / response', type: :request do
     get '/', headers: headers
   end
 
-  it 'is json' do
+  it 'has correct Content-Type header value' do
     expect(response.content_type).to eq('application/vnd.api+json')
   end
 
