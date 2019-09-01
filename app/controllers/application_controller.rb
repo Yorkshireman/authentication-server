@@ -1,13 +1,15 @@
 class ApplicationController < ActionController::API
-  before_action :authenticate_request
-  attr_reader :current_user
+  before_action :set_headers
 
-  include ExceptionHandler
+  def index
+    render json: {
+      data: {
+        message: 'Hello World'
+      }
+    }
+  end
 
-  private
-
-  def authenticate_request
-    @current_user = AuthoriseApiRequest.call(request.headers).result
-    render json: { error: 'Not Authorised' }, status: 401 unless @current_user
+  def set_headers
+    response.headers['Content-Type'] = 'application/vnd.api+json'
   end
 end
