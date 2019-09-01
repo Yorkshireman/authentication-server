@@ -1,3 +1,7 @@
 language: ruby
+
 before_script:
   - bundle exec rake lint
+
+services:
+  - postgresql
