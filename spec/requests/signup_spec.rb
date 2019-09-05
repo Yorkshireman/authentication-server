@@ -19,6 +19,6 @@ RSpec.describe 'POST /signup', type: :request do
 
   it 'has correct token' do
     expected_token = 'foo' # need to generate this somehow
-    expect(response.body.data.token).to eq(expected_token)
+    expect(JSON.parse(response.body)['data']['token']).to eq(expected_token)
   end
 end
