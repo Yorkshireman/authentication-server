@@ -11,6 +11,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'dotenv-rails', groups: [:development, :test]
 
+gem 'jwt', '~> 2.2.1'
+
 gem 'pg'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder

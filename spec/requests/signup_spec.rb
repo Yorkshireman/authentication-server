@@ -1,3 +1,4 @@
+require 'jwt'
 require 'rails_helper'
 
 RSpec.describe 'POST /signup', type: :request do
@@ -17,8 +18,15 @@ RSpec.describe 'POST /signup', type: :request do
     expect(response).to have_http_status(201)
   end
 
-  it 'has correct token' do
-    expected_token = 'foo' # need to generate this somehow
-    expect(JSON.parse(response.body)['data']['token']).to eq(expected_token)
+  describe 'token' do
+    it 'is a String' do
+      expect(JSON.parse(response.body)['data']['token']).to be_a(String)
+    end
+
+    it 'contains correct information' do
+      decoded_token = JWT.decode(JSON.parse(response.body)['data']['token'], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256'})
+      expected_information = [{ 'user_id' => '1' }, { 'alg' => 'HS256' }]
+      expect(decoded_token).to eq(expected_information)
+    end
   end
 end
