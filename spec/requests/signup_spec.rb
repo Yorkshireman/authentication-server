@@ -24,7 +24,13 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     it 'contains correct information' do
-      decoded_token = JWT.decode(JSON.parse(response.body)['data']['token'], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256'})
+      decoded_token = JWT.decode(
+        JSON.parse(response.body)['data']['token'],
+        ENV['JWT_SECRET_KEY'],
+        true,
+        { algorithm: 'HS256' }
+      )
+
       expected_information = [{ 'user_id' => '1' }, { 'alg' => 'HS256' }]
       expect(decoded_token).to eq(expected_information)
     end
