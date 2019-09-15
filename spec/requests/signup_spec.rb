@@ -1,6 +1,6 @@
 require 'jwt'
 require 'rails_helper'
-
+# rubocop:disable Metrics/BlockLength
 RSpec.describe 'POST /signup', type: :request do
   before :each do
     headers = {
@@ -36,3 +36,4 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
