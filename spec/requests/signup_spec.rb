@@ -9,6 +9,7 @@ RSpec.describe 'POST /signup', type: :request do
       }
 
       post '/signup', headers: headers
+      # might need a teardown phase to delete any created Users after each test
     end
 
     it 'responds with 401' do
