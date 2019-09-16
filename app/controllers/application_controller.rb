@@ -5,17 +5,23 @@ class ApplicationController < ActionController::API
     response.headers['Content-Type'] = 'application/vnd.api+json'
   end
 
+  # rubocop:disable Metrics/MethodLength
   def validate_headers
-    return if request.headers['Authorization']
+    return if /\ABearer [a-zA-Z0-9]+\.[a-zA-Z0-9]+.[a-zA-Z0-9]+\z/.match?(request.headers['Authorization'])
 
-    response.status = 401
+    response.status = '400'
     render json: {
       errors: [
         {
-          status: '401',
-          title: 'Missing Authorization header'
+          status: '400',
+          title: if request.headers['Authorization'].nil?
+                   'Missing Authorization header'
+                 else
+                   'Malformed Authorization header'
+                 end
         }
       ]
     }
   end
+  # rubocop:enable Metrics/MethodLength
 end
