@@ -2,13 +2,25 @@ require 'jwt'
 require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
 RSpec.describe 'POST /signup', type: :request do
+  # write test for what happens with application/json Accept header
+
+  describe 'when invalid params' do
+    it 'something happens'
+  end
+
   describe 'response to a valid request' do
     before :each do
       headers = {
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      post '/signup', headers: headers
+      params = JSON.generate({
+        email: 'testuser@email.com',
+        password: 'password',
+        username: 'JoeBloggs'
+      })
+
+      post '/signup', headers: headers, params: params
     end
 
     it 'has correct Content-Type header value' do
