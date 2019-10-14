@@ -2,10 +2,9 @@ require_relative '../helpers/token_helper'
 
 class UsersController < ApplicationController
   include TokenHelper
+  # rubocop: disable Style/GuardClause
   def signup
-    # validate params
     user = User.new(user_params)
-    # rubocop: disable Style/GuardClause
     if user.save
       response.status = 201
       token = generate_token({ user_id: user.id })
@@ -15,8 +14,8 @@ class UsersController < ApplicationController
         }
       }
     end
-    # rubocop: enable Style/GuardClause
   end
+  # rubocop: enable Style/GuardClause
 
   private
 
