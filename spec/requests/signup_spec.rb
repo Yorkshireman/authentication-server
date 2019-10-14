@@ -5,7 +5,32 @@ RSpec.describe 'POST /signup', type: :request do
   # write test for what happens with application/json Accept header
 
   describe 'when invalid params' do
-    it 'something happens'
+    let(:user) { User.first }
+    describe 'missing parameter' do
+      before :all do
+        User.destroy_all
+        headers = {
+          'CONTENT_TYPE' => 'application/vnd.api+json'
+        }
+
+        params = JSON.generate({
+          user: {
+            email: 'testuser@email.com',
+            password: 'password'
+          }
+        })
+
+        post '/signup', headers: headers, params: params
+      end
+
+      it 'response is 400' do
+        expect(response).to have_http_status(400)
+      end
+
+      it 'user is not created' do
+        expect(User.count).to eq(0)
+      end
+    end
   end
 
   describe 'when request is valid' do
@@ -18,9 +43,11 @@ RSpec.describe 'POST /signup', type: :request do
       }
 
       params = JSON.generate({
-        email: 'testuser@email.com',
-        password: 'password',
-        name: 'JoeBloggs'
+        user: {
+          email: 'testuser@email.com',
+          name: 'JoeBloggs',
+          password: 'password'
+        }
       })
 
       post '/signup', headers: headers, params: params
