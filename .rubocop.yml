@@ -1,7 +1,10 @@
 AllCops:
   Exclude:
     - db/schema.rb
-    - vendor/**/*
+
+inherit_mode:
+  merge:
+    - Exclude
 
 Metrics/LineLength:
   Max: 120
