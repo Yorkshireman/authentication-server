@@ -7,28 +7,40 @@ RSpec.describe 'POST /signup', type: :request do
   describe 'when invalid params' do
     let(:user) { User.first }
     describe 'missing parameter' do
-      before :all do
-        User.destroy_all
-        headers = {
-          'CONTENT_TYPE' => 'application/vnd.api+json'
+      [
+        {
+          email: 'testuser@email.com',
+          password: 'password'
+        },
+        {
+          email: 'testuser@email.com',
+          name: 'JoeBloggs'
+        },
+        {
+          name: 'JoeBloggs',
+          password: 'password'
         }
-
-        params = JSON.generate({
-          user: {
-            email: 'testuser@email.com',
-            password: 'password'
+      ].each do |user_params|
+        before :all do
+          User.destroy_all
+          headers = {
+            'CONTENT_TYPE' => 'application/vnd.api+json'
           }
-        })
 
-        post '/signup', headers: headers, params: params
-      end
+          params = JSON.generate({
+            user: user_params
+          })
 
-      it 'response is 400' do
-        expect(response).to have_http_status(400)
-      end
+          post '/signup', headers: headers, params: params
+        end
 
-      it 'user is not created' do
-        expect(User.count).to eq(0)
+        it 'response is 400' do
+          expect(response).to have_http_status(400)
+        end
+
+        it 'user is not created' do
+          expect(User.count).to eq(0)
+        end
       end
     end
   end
