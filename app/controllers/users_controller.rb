@@ -7,7 +7,7 @@ class UsersController < ApplicationController
     user = User.new(user_params)
     if user.save
       response.status = 201
-      token = generate_token({ user_id: user.id })
+      token = generate_token({ exp: (Time.now + 1800).to_i, user_id: user.id })
       render json: {
         data: {
           token: token

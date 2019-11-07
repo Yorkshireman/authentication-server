@@ -46,6 +46,7 @@ RSpec.describe 'POST /signup', type: :request do
   end
 
   describe 'when request is valid' do
+    include ActiveSupport::Testing::TimeHelpers
     let(:user) { User.first }
     before :all do
       # thought there wouldn't be a need for this. Why doesn't the test db reset after each run of the suite?
@@ -62,7 +63,10 @@ RSpec.describe 'POST /signup', type: :request do
         }
       })
 
-      post '/signup', headers: headers, params: params
+      freeze_time do
+        @time_now = Time.now
+        post '/signup', headers: headers, params: params
+      end
     end
 
     it 'creates a user' do
@@ -98,7 +102,7 @@ RSpec.describe 'POST /signup', type: :request do
         end
 
         it 'contains correct information' do
-          expected_decoded_token = [{ 'user_id' => user.id }, { 'alg' => 'HS256' }]
+          expected_decoded_token = [{ 'exp' => (@time_now + 1800).to_i, 'user_id' => user.id }, { 'alg' => 'HS256' }]
           actual_decoded_token = JWT.decode(
             JSON.parse(response.body)['data']['token'],
             ENV['JWT_SECRET_KEY'],
