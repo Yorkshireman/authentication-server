@@ -2,8 +2,6 @@ require 'jwt'
 require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
 RSpec.describe 'POST /signup', type: :request do
-  # write test for what happens with application/json Accept header
-
   describe 'when invalid params' do
     let(:user) { User.first }
     describe 'missing parameter' do
