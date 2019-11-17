@@ -6,8 +6,8 @@ class UsersController < ApplicationController
   def signup
     user = User.new(user_params)
     if user.save
-      response.status = 201
       token = generate_token({ exp: (Time.now + 1800).to_i, user_id: user.id })
+      response.status = 201
       render json: {
         data: {
           token: token
