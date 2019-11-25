@@ -48,8 +48,9 @@ class UsersController < ApplicationController
 
   def user_params(name_required = false)
     params.require(:user).permit(:email, :name, :password).tap do |user_params|
-      params_array = name_required ? [:email, :name, :password] : [:email, :password]
-      user_params.require(params_array)
+      (name_required ? [:email, :name, :password] : [:email, :password]).then do |p|
+        user_params.require(p)
+      end
     end
   end
 end
