@@ -1,14 +1,12 @@
 require_relative '../helpers/token_helper'
 
 class UsersController < ApplicationController
+  include TokenHelper
   rescue_from ActionController::ParameterMissing, with: :missing_parameter
 
-  include TokenHelper
   def signin
-    email = user_params([:email, :password])[:email]
-    password = user_params([:email, :password])[:password]
-    user = User.find_by(email: email)
-    if !user || !user.authenticate(password)
+    user = User.find_by(email: user_params([:email, :password])[:email])
+    unless user&.authenticate(params[:user][:password])
       response.status = 401
       return render json: {
         errors: [
@@ -24,20 +22,19 @@ class UsersController < ApplicationController
       }
     }
   end
-  # rubocop: disable Style/GuardClause
+
   def signup
     user = User.new(user_params([:email, :name, :password]))
-    if user.save
-      token = generate_token({ exp: (Time.now + 1800).to_i, user_id: user.id })
-      response.status = 201
-      render json: {
-        data: {
-          token: token
-        }
+    return unless user.save
+
+    token = generate_token({ exp: (Time.now + 1800).to_i, user_id: user.id })
+    response.status = 201
+    render json: {
+      data: {
+        token: token
       }
-    end
+    }
   end
-  # rubocop: enable Style/GuardClause
 
   private
 
