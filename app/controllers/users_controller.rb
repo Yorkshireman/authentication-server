@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   rescue_from ActionController::ParameterMissing, with: :render_parameter_missing
 
   def signin
-    User.find_by(email: user_params([:email, :password])[:email]).then do |user|
+    User.find_by(email: user_params[:email]).then do |user|
       unless user&.authenticate(params[:user][:password])
         return render_error_response(401, 'Incorrect email/password.')
       end
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def signup
-    User.new(user_params([:email, :name, :password])).then do |user|
+    User.new(user_params(true)).then do |user|
       render_success_response(201, user.id) if user.save
     end
   end
@@ -46,9 +46,10 @@ class UsersController < ApplicationController
     end
   end
 
-  def user_params(required_params)
+  def user_params(name_required = false)
     params.require(:user).permit(:email, :name, :password).tap do |user_params|
-      user_params.require(required_params)
+      params_array = name_required ? [:email, :name, :password] : [:email, :password]
+      user_params.require(params_array)
     end
   end
 end
