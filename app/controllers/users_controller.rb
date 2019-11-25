@@ -2,49 +2,48 @@ require_relative '../helpers/token_helper'
 
 class UsersController < ApplicationController
   include TokenHelper
-  rescue_from ActionController::ParameterMissing, with: :missing_parameter
+  rescue_from ActionController::ParameterMissing, with: :render_parameter_missing
 
   def signin
-    user = User.find_by(email: user_params([:email, :password])[:email])
-    unless user&.authenticate(params[:user][:password])
-      response.status = 401
-      return render json: {
-        errors: [
-          { title: 'Incorrect email/password.' }
-        ]
-      }
-    end
+    User.find_by(email: user_params([:email, :password])[:email]).then do |user|
+      return render_error_response(401, 'Incorrect email/password.') unless
+        user&.authenticate(params[:user][:password])
 
-    token = generate_token({ exp: (Time.now + 1800).to_i, user_id: user.id })
-    render json: {
-      data: {
-        token: token
-      }
-    }
+      render_success_response(200, user.id)
+    end
   end
 
   def signup
     user = User.new(user_params([:email, :name, :password]))
     return unless user.save
 
-    token = generate_token({ exp: (Time.now + 1800).to_i, user_id: user.id })
-    response.status = 201
-    render json: {
-      data: {
-        token: token
-      }
-    }
+    render_success_response(201, user.id)
   end
 
   private
 
-  def missing_parameter
-    response.status = 400
+  def render_error_response(status, message)
+    response.status = status
     render json: {
       errors: [
-        { title: 'Missing parameter(s).' }
+        { title: message }
       ]
     }
+  end
+
+  def render_parameter_missing
+    render_error_response(400, 'Missing parameter(s).')
+  end
+
+  def render_success_response(status, user_id)
+    response.status = status
+    generate_token({ exp: (Time.now + 1800).to_i, user_id: user_id }).then do |token|
+      render json: {
+        data: {
+          token: token
+        }
+      }
+    end
   end
 
   def user_params(required_params)
