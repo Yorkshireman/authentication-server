@@ -36,6 +36,20 @@ RSpec.describe 'POST /signup', type: :request do
           expect(response).to have_http_status(400)
         end
 
+        it 'has correct Content-Type header value' do
+          expect(response.content_type).to eq('application/vnd.api+json')
+        end
+
+        it 'response body has error' do
+          expected_body = JSON.generate({
+            errors: [
+              { title: 'Missing parameter(s).' }
+            ]
+          })
+
+          expect(response.body).to eq(expected_body)
+        end
+
         it 'user is not created' do
           expect(User.count).to eq(0)
         end
