@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   def signin
     User.find_by(email: user_params([:email, :password])[:email]).then do |user|
-      if !user&.authenticate(params[:user][:password])
+      unless user&.authenticate(params[:user][:password])
         return render_error_response(401, 'Incorrect email/password.')
       end
 
@@ -15,10 +15,9 @@ class UsersController < ApplicationController
   end
 
   def signup
-    user = User.new(user_params([:email, :name, :password]))
-    return unless user.save
-
-    render_success_response(201, user.id)
+    User.new(user_params([:email, :name, :password])).then do |user|
+      render_success_response(201, user.id) if user.save
+    end
   end
 
   private
