@@ -6,8 +6,9 @@ class UsersController < ApplicationController
 
   def signin
     User.find_by(email: user_params([:email, :password])[:email]).then do |user|
-      return render_error_response(401, 'Incorrect email/password.') unless
-        user&.authenticate(params[:user][:password])
+      if !user&.authenticate(params[:user][:password])
+        return render_error_response(401, 'Incorrect email/password.')
+      end
 
       render_success_response(200, user.id)
     end

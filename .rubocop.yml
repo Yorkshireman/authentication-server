@@ -6,14 +6,8 @@ inherit_mode:
   merge:
     - Exclude
 
-Metrics/AbcSize:
-  Max: 15.33
-
 Metrics/LineLength:
   Max: 120
-
-Metrics/MethodLength:
-  Max: 15
 
 Layout/IndentHash:
   Enabled: false
@@ -27,7 +21,13 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Style/IfUnlessModifier:
+  Enabled: false
+
 Style/MixinUsage:
+  Enabled: false
+
+Style/NegatedIf:
   Enabled: false
 
 Style/RegexpLiteral:
