@@ -26,10 +26,4 @@ RSpec.describe User, type: :model do
   it 'cannot be created without a password' do
     expect { User.create(email: 'joebloggs@email.com', name: 'Joe') }.to change { User.count }.by(0)
   end
-
-  it 'cannot be created when a user with identical email already exists' do
-    User.create(email: 'joebloggs@email.com', name: 'Joe', password: 'password')
-    User.create(email: 'joebloggs@email.com', name: 'Mr Foobar', password: 'fizzbuzz')
-    expect(User.count).to eq(1)
-  end
 end

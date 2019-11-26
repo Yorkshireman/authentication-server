@@ -127,11 +127,11 @@ RSpec.describe 'POST /signup', type: :request do
   describe 'when attempting to create a user with a duplicate email' do
     before :all do
       User.destroy_all
-      @headers = {
+      headers = {
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      @params = JSON.generate({
+      params = JSON.generate({
         user: {
           email: 'testuser@email.com',
           name: 'JoeBloggs',
@@ -139,11 +139,18 @@ RSpec.describe 'POST /signup', type: :request do
         }
       })
 
-      post '/signup', headers: @headers, params: @params
+      post '/signup', headers: headers, params: params
+      post '/signup', headers: headers, params: JSON.generate({
+        user: {
+          email: 'testuser@email.com',
+          name: 'Mr Foobar',
+          password: 'fizzbuzz'
+        }
+      })
     end
 
     it 'it cannot be created' do
-      expect { post '/signup', headers: @headers, params: @params }.to_not change{ User.count }
+      expect(User.count).to eq(1)
     end
 
     describe 'response' do
@@ -158,7 +165,7 @@ RSpec.describe 'POST /signup', type: :request do
       it 'response body has error' do
         expected_body = JSON.generate({
           errors: [
-            { title: 'User with that email already exists.' }
+            { title: 'Validation failed: Email has already been taken' }
           ]
         })
 
