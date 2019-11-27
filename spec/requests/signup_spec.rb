@@ -36,6 +36,20 @@ RSpec.describe 'POST /signup', type: :request do
           expect(response).to have_http_status(400)
         end
 
+        it 'has correct Content-Type header value' do
+          expect(response.content_type).to eq('application/vnd.api+json')
+        end
+
+        it 'response body has error' do
+          expected_body = JSON.generate({
+            errors: [
+              { title: 'Missing parameter(s).' }
+            ]
+          })
+
+          expect(response.body).to eq(expected_body)
+        end
+
         it 'user is not created' do
           expect(User.count).to eq(0)
         end
@@ -44,8 +58,8 @@ RSpec.describe 'POST /signup', type: :request do
   end
 
   describe 'when request is valid' do
-    include ActiveSupport::Testing::TimeHelpers
     let(:user) { User.first }
+    include ActiveSupport::Testing::TimeHelpers
     before :all do
       # thought there wouldn't be a need for this. Why doesn't the test db reset after each run of the suite?
       User.destroy_all
@@ -67,20 +81,16 @@ RSpec.describe 'POST /signup', type: :request do
       end
     end
 
-    it 'creates a user' do
-      expect(User.count).to eq(1)
-    end
-
-    describe 'created user' do
-      it 'has correct email' do
+    describe 'user' do
+      it 'user has correct email' do
         expect(user.email).to eq('testuser@email.com')
       end
 
-      it 'has correct name' do
+      it 'user has correct name' do
         expect(user.name).to eq('JoeBloggs')
       end
 
-      it 'has a password' do
+      it 'user has a password' do
         expect(user.password_digest).to be_truthy
       end
     end
@@ -110,6 +120,56 @@ RSpec.describe 'POST /signup', type: :request do
 
           expect(actual_decoded_token).to eq(expected_decoded_token)
         end
+      end
+    end
+  end
+
+  describe 'when attempting to create a user with a duplicate email' do
+    before :all do
+      User.destroy_all
+      headers = {
+        'CONTENT_TYPE' => 'application/vnd.api+json'
+      }
+
+      params = JSON.generate({
+        user: {
+          email: 'testuser@email.com',
+          name: 'JoeBloggs',
+          password: 'password'
+        }
+      })
+
+      post '/signup', headers: headers, params: params
+      post '/signup', headers: headers, params: JSON.generate({
+        user: {
+          email: 'testuser@email.com',
+          name: 'Mr Foobar',
+          password: 'fizzbuzz'
+        }
+      })
+    end
+
+    it 'it cannot be created' do
+      expect(User.count).to eq(1)
+    end
+
+    describe 'response' do
+      it 'response is 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'has correct Content-Type header value' do
+        expect(response.content_type).to eq('application/vnd.api+json')
+      end
+
+      it 'response body has error' do
+        expected_body = JSON.generate({
+          errors: [
+            { title: 'Validation failed: Email has already been taken' }
+          ]
+        })
+
+        expect(response.body).to eq(expected_body)
       end
     end
   end

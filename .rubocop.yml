@@ -21,7 +21,13 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Style/IfUnlessModifier:
+  Enabled: false
+
 Style/MixinUsage:
+  Enabled: false
+
+Style/NegatedIf:
   Enabled: false
 
 Style/RegexpLiteral:
