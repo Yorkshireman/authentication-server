@@ -47,9 +47,6 @@ class UsersController < ApplicationController
       }
     end
   end
-  # rubocop: enable Style/GuardClause
-
-  private
 
   def user_params(name_required = false)
     params.require(:user).permit(:email, :name, :password).tap do |user_params|
