@@ -78,10 +78,9 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.6.3)
     jwt (2.2.3)
-    listen (3.1.5)
+    listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -93,7 +92,6 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.1)
     minitest (5.18.0)
     msgpack (1.6.1)
     net-imap (0.3.4)
@@ -106,13 +104,13 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.8)
-    nokogiri (1.14.2)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.14.2-arm64-darwin)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.2.1.1)
       ast (~> 2.4.1)
     pg (1.4.6)
+    psych (3.3.4)
     puma (4.3.12)
       nio4r (~> 2.0)
     racc (1.6.2)
@@ -187,7 +185,6 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.13.0)
-    ruby_dep (1.5.0)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -211,7 +208,7 @@ GEM
     zeitwerk (2.6.7)
 
 PLATFORMS
-  ruby
+  arm64-darwin-22
 
 DEPENDENCIES
   bcrypt (~> 3.1.7)
@@ -221,6 +218,7 @@ DEPENDENCIES
   jwt (~> 2.2.1)
   listen (>= 3.0.5, < 3.2)
   pg
+  psych (< 4)
   puma (~> 4.3.5)
   rack-cors
   rails (~> 6.0.2.rc1)
@@ -231,7 +229,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
 
 RUBY VERSION
-   ruby 2.7.7p221
+   ruby 3.1.3p185
 
 BUNDLED WITH
    2.4.10

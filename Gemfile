@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.7'
+ruby '3.1.3'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
@@ -14,6 +14,8 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem 'jwt', '~> 2.2.1'
 
 gem 'pg'
+
+gem 'psych', '< 4'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
