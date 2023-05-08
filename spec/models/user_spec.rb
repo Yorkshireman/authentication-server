@@ -15,8 +15,8 @@ RSpec.describe User, type: :model do
     expect(user.password).to eq('password')
   end
 
-  it 'cannot be created without a name' do
-    expect { User.create(email: 'joebloggs@email.com', password: 'password') }.to change { User.count }.by(0)
+  it 'can be created without a name' do
+    expect { User.create(email: 'joebloggs@email.com', password: 'password') }.to change { User.count }.by(1)
   end
 
   it 'cannot be created without an email' do

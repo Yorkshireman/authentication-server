@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def signup
-    User.new(user_params(true)).then do |user|
+    User.new(user_params).then do |user|
       render_success_response(201, user.id) if user.save!
     rescue ActiveRecord::RecordInvalid => e
       render_error_response(403, e)
