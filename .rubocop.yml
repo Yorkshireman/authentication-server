@@ -8,19 +8,19 @@ inherit_mode:
   merge:
     - Exclude
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
-Layout/IndentHash:
-  Enabled: false
-
-Style/BracesAroundHashParameters:
+Layout/FirstHashElementIndentation:
   Enabled: false
 
 Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/HashSyntax:
   Enabled: false
 
 Style/IfUnlessModifier:
@@ -30,6 +30,9 @@ Style/MixinUsage:
   Enabled: false
 
 Style/NegatedIf:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
   Enabled: false
 
 Style/RegexpLiteral:
