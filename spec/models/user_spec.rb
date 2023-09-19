@@ -1,5 +1,5 @@
 require 'rails_helper'
-
+# rubocop:disable Metrics/BlockLength
 RSpec.describe User, type: :model do
   let(:user) { User.create(email: 'joebloggs@email.com', name: 'Joe', password: 'password') }
   before :each do
@@ -37,6 +37,8 @@ RSpec.describe User, type: :model do
 
   it 'throws error when attempting to be created, using `create!`, with the same name as a pre-existing User' do
     user
-    expect { User.create!(email: 'legit@email.com', name: 'Joe', password: 'password') }.to raise_error(ActiveRecord::RecordInvalid)
+    expect { User.create!(email: 'legit@email.com', name: 'Joe', password: 'password') }.to
+    raise_error(ActiveRecord::RecordInvalid)
   end
 end
+# rubocop:enable Metrics/BlockLength
