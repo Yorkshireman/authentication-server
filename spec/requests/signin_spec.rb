@@ -29,8 +29,8 @@ RSpec.describe 'POST /signin', type: :request do
           expect(response).to have_http_status(400)
         end
 
-        it 'has correct Content-Type header value' do
-          expect(response.content_type).to eq('application/vnd.api+json')
+        it 'has correct MIME type' do
+          expect(response.media_type).to eq('application/vnd.api+json')
         end
 
         it 'response body has error' do
@@ -129,8 +129,8 @@ RSpec.describe 'POST /signin', type: :request do
     end
 
     describe 'response' do
-      it 'has correct Content-Type header value' do
-        expect(response.content_type).to eq('application/vnd.api+json')
+      it 'has correct MIME type' do
+        expect(response.media_type).to eq('application/vnd.api+json')
       end
 
       it 'has 200 status code' do
