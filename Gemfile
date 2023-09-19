@@ -20,7 +20,7 @@ gem 'psych', '< 4'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 
-gem 'puma', '~> 4.3.5'
+gem 'puma', '~> 6.3.1'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
