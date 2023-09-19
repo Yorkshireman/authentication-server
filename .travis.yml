@@ -1,8 +1,0 @@
-before_script:
-  - bundle exec rake lint
-  - psql -c 'create database "authentication-server_test";' -U postgres
-
-language: ruby
-
-services:
-  - postgresql
