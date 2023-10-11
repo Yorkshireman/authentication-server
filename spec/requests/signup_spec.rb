@@ -32,8 +32,8 @@ RSpec.describe 'POST /signup', type: :request do
           expect(response).to have_http_status(400)
         end
 
-        it 'has correct Content-Type header value' do
-          expect(response.content_type).to eq('application/vnd.api+json')
+        it 'has correct MIME type' do
+          expect(response.media_type).to eq('application/vnd.api+json')
         end
 
         it 'response body has error' do
@@ -92,8 +92,8 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     describe 'response' do
-      it 'has correct Content-Type header value' do
-        expect(response.content_type).to eq('application/vnd.api+json')
+      it 'has correct MIME type' do
+        expect(response.media_type).to eq('application/vnd.api+json')
       end
 
       it 'has 201 status code' do
@@ -158,8 +158,8 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     describe 'response' do
-      it 'has correct Content-Type header value' do
-        expect(response.content_type).to eq('application/vnd.api+json')
+      it 'has correct MIME type' do
+        expect(response.media_type).to eq('application/vnd.api+json')
       end
 
       it 'has 201 status code' do
@@ -220,14 +220,56 @@ RSpec.describe 'POST /signup', type: :request do
         expect(response).to have_http_status(403)
       end
 
-      it 'has correct Content-Type header value' do
-        expect(response.content_type).to eq('application/vnd.api+json')
+      it 'has correct MIME type' do
+        expect(response.media_type).to eq('application/vnd.api+json')
       end
 
       it 'response body has error' do
         expected_body = JSON.generate({
           errors: [
             { title: 'Validation failed: Email has already been taken' }
+          ]
+        })
+
+        expect(response.body).to eq(expected_body)
+      end
+    end
+  end
+
+  describe 'when attempting to create a user with a duplicate name' do
+    before :all do
+      User.destroy_all
+      User.create!(email: 'joebloggs@email.com', name: 'Joe', password: 'password')
+      headers = {
+        'CONTENT_TYPE' => 'application/vnd.api+json'
+      }
+
+      post '/signup', headers: headers, params: JSON.generate({
+        user: {
+          email: 'legit@email.com',
+          name: 'Joe',
+          password: 'foobar'
+        }
+      })
+    end
+
+    it 'it cannot be created' do
+      expect(User.count).to eq(1)
+    end
+
+    describe 'response' do
+      it 'response is 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'has correct MIME type' do
+        expect(response.media_type).to eq('application/vnd.api+json')
+      end
+
+      it 'response body has error' do
+        expected_body = JSON.generate({
+          errors: [
+            { title: 'Validation failed: Name has already been taken' }
           ]
         })
 
