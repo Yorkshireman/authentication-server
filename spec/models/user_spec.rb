@@ -29,7 +29,9 @@ RSpec.describe User, type: :model do
 
   it 'can be created with empty string as a name when another user also has the same' do
     User.create(email: 'joebloggs@email.com', name: '', password: 'password')
-    expect { User.create(email: 'anotheruser@email.com', name: '', password: 'password') }.to change { User.count }.by(1)
+    expect { User.create(email: 'anotheruser@email.com', name: '', password: 'password') }.to change {
+                                                                                                User.count
+                                                                                              }.by(1)
   end
 
   it 'cannot be created without an email' do
