@@ -78,15 +78,15 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     describe 'user' do
-      it 'user has correct email' do
+      it 'has correct email' do
         expect(user.email).to eq('testuser@email.com')
       end
 
-      it 'user has correct name' do
+      it 'has correct name' do
         expect(user.name).to eq('JoeBloggs')
       end
 
-      it 'user has a password' do
+      it 'has a password' do
         expect(user.password_digest).to be_truthy
       end
     end
@@ -144,15 +144,15 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     describe 'user' do
-      it 'user has correct email' do
+      it 'has correct email' do
         expect(user.email).to eq('testuser@email.com')
       end
 
-      it 'user has no name' do
+      it 'has no name' do
         expect(user.name).to be nil
       end
 
-      it 'user has a password' do
+      it 'has a password' do
         expect(user.password_digest).to be_truthy
       end
     end
