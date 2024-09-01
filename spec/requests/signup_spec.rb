@@ -120,8 +120,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
-  describe 'when request is valid and missing name' do
-    let(:user) { User.first }
+  describe 'when signing up with an empty name when a previous user signed up with an empty name' do
     include ActiveSupport::Testing::TimeHelpers
     before :all do
       # thought there wouldn't be a need for this. Why doesn't the test db reset after each run of the suite?
@@ -141,11 +140,23 @@ RSpec.describe 'POST /signup', type: :request do
         @time_now = Time.now
         post '/signup', headers: headers, params: params
       end
+
+      freeze_time do
+        @time_now = Time.now
+        params = JSON.generate({
+          user: {
+            email: 'testuser2@email.com',
+            password: 'password'
+          }
+        })
+        post '/signup', headers: headers, params: params
+      end
     end
 
+    let(:user) { User.second }
     describe 'user' do
       it 'has correct email' do
-        expect(user.email).to eq('testuser@email.com')
+        expect(user.email).to eq('testuser2@email.com')
       end
 
       it 'has no name' do
@@ -172,6 +183,7 @@ RSpec.describe 'POST /signup', type: :request do
         end
 
         it 'contains correct information' do
+          require "byebug"; byebug;
           expected_decoded_token = [{ 'exp' => (@time_now + 1800).to_i, 'user_id' => user.id }, { 'alg' => 'HS256' }]
           actual_decoded_token = JWT.decode(
             JSON.parse(response.body)['data']['token'],
