@@ -129,27 +129,18 @@ RSpec.describe 'POST /signup', type: :request do
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      params = JSON.generate({
+      fields = {
         user: {
           email: 'testuser@email.com',
           password: 'password'
         }
-      })
+      }
 
       freeze_time do
         @time_now = Time.now
-        post '/signup', headers: headers, params: params
-      end
-
-      freeze_time do
-        @time_now = Time.now
-        params = JSON.generate({
-          user: {
-            email: 'testuser2@email.com',
-            password: 'password'
-          }
-        })
-        post '/signup', headers: headers, params: params
+        post '/signup', headers: headers, params: JSON.generate(fields)
+        fields[:user][:email] = 'testuser2@email.com'
+        post '/signup', headers: headers, params: JSON.generate(fields)
       end
     end
 
