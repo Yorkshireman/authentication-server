@@ -183,7 +183,6 @@ RSpec.describe 'POST /signup', type: :request do
         end
 
         it 'contains correct information' do
-          require "byebug"; byebug;
           expected_decoded_token = [{ 'exp' => (@time_now + 1800).to_i, 'user_id' => user.id }, { 'alg' => 'HS256' }]
           actual_decoded_token = JWT.decode(
             JSON.parse(response.body)['data']['token'],
