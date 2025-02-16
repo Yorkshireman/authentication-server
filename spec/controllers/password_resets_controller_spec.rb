@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe PasswordResetsController, type: :controller do
-  describe 'GET #create' do
+  describe 'POST #create' do
     it 'returns http success' do
-      get :create
+      post :create, params: { email: 'test@test.com' }
       expect(response).to have_http_status(:success)
     end
   end
