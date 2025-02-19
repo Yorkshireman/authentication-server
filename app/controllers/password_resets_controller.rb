@@ -10,6 +10,7 @@ class PasswordResetsController < ApplicationController
 
     token = generate_token({ exp: (Time.now + 7200).to_i })
     puts token
+    PasswordResetMailer.password_reset_email.deliver_now
   end
 
   def edit; end
