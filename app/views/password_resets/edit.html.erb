@@ -3,7 +3,7 @@
 <%= form_with url: update_password_path, method: :patch, local: true do |form| %>
   <div class="field">
     <%= form.label :password, "New Password" %>
-    <%= form.password_field :password %>
+    <%= form.password_field :password, minlength: 8 %>
   </div>
 
   <div class="field">
@@ -17,3 +17,21 @@
     <%= form.submit "Reset Password" %>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const password = document.getElementById("password");
+    const passwordConfirmation = document.getElementById("password_confirmation");
+
+    function validatePassword() {
+      if (password.value !== passwordConfirmation.value) {
+        passwordConfirmation.setCustomValidity("Passwords do not match.");
+      } else {
+        passwordConfirmation.setCustomValidity("");
+      }
+    }
+
+    password.onchange = validatePassword;
+    passwordConfirmation.onkeyup = validatePassword;
+  });
+</script>
