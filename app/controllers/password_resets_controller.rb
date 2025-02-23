@@ -22,8 +22,8 @@ class PasswordResetsController < ActionController::Base
     decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
+    # should check if password is same as old one? Maybe not cos why shouldn't we let them do that?
     user.update(password: params[:password])
-    # update db for "password changed"? Might have done this automatically already
     # invalidate the token
   end
 end
