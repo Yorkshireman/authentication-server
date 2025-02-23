@@ -1,8 +1,8 @@
 require_relative '../helpers/token_helper'
 
-# decoded_token = JWT.decode(token, ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
 class PasswordResetsController < ActionController::Base
   include TokenHelper
+  skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
     email = params.require(:email)
@@ -19,6 +19,11 @@ class PasswordResetsController < ActionController::Base
   end
 
   def update
-    puts '------------ hello from update'
+    decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
+    # may want a granular error response for token expiration scenario
+    user = User.find(decoded_token[0]['user_id'])
+    user.update(password: params[:password])
+    # update db for "password changed"? Might have done this automatically already
+    # invalidate the token
   end
 end
