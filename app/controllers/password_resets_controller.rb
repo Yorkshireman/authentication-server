@@ -20,6 +20,7 @@ class PasswordResetsController < ActionController::Base
 
   def update
     decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
+    puts decoded_token
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
     # if token's issued_at is before password_changed_at, return an error
