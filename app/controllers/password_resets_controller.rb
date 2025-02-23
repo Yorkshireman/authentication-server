@@ -9,7 +9,7 @@ class PasswordResetsController < ActionController::Base
     user = User.find_by(email: email)
     return unless user
 
-    token = generate_token({ exp: (Time.now + 7200).to_i, user_id: user.id })
+    token = generate_token({ exp: (Time.now + 7200).to_i, issued_at: Time.now, user_id: user.id })
     PasswordResetMailer.with(email: user.email, token: token).password_reset_email.deliver_now
   end
 
@@ -22,8 +22,8 @@ class PasswordResetsController < ActionController::Base
     decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
+    # if token's issued_at is before password_changed_at, return an error
     # should check if password is same as old one? Maybe not cos why shouldn't we let them do that?
     user.update(password: params[:password])
-    # invalidate the token
   end
 end
