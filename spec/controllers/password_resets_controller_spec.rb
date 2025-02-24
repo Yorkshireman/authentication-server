@@ -1,5 +1,5 @@
 require 'rails_helper'
-
+# rubocop:disable Metrics/BlockLength
 RSpec.describe PasswordResetsController, type: :controller do
   render_views
   let(:user) do
@@ -45,3 +45,4 @@ RSpec.describe PasswordResetsController, type: :controller do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
