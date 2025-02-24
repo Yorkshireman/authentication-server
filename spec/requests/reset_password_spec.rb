@@ -21,16 +21,18 @@ RSpec.describe 'POST /reset-password', type: :request do
   end
 
   describe 'email not found' do
-    before :all do
-      headers = {
-        'CONTENT_TYPE' => 'application/vnd.api+json'
-      }
-
-      params = JSON.generate({ email: 'foo@bar.com' })
-      post '/reset-password', headers: headers, params: params
+    before :each do
+      ActionMailer::Base.deliveries.clear
     end
 
-    it 'response is 204 No Content' do
+    it 'returns 204 No Content and does not send an email' do
+      headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
+      params = JSON.generate({ email: 'foo@bar.com' })
+
+      expect do
+        post '/reset-password', headers: headers, params: params
+      end.not_to(change { ActionMailer::Base.deliveries.count })
+
       expect(response).to have_http_status(204)
     end
   end
