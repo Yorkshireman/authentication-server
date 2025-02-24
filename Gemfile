@@ -43,3 +43,5 @@ end
 group :test do
   gem 'rake'
 end
+
+gem "rails-controller-testing", "~> 1.0", :group => :test
