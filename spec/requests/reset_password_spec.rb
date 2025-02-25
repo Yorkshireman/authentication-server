@@ -7,15 +7,17 @@ RSpec.describe 'POST /reset-password', type: :request do
   end
 
   describe 'missing email param' do
-    before :all do
+    it 'returns 400 and does not send an email' do
       headers = {
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
       post '/reset-password', headers: headers
-    end
 
-    it 'response is 400' do
+      expect do
+        post '/reset-password', headers: headers
+      end.not_to(change { ActionMailer::Base.deliveries.count })
+
       expect(response).to have_http_status(400)
     end
   end
@@ -38,16 +40,18 @@ RSpec.describe 'POST /reset-password', type: :request do
   end
 
   describe 'email is found' do
-    before :all do
+    it 'returns 204 and sends an email' do
       headers = {
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
       params = JSON.generate({ email: 'test@test.com' })
       post '/reset-password', headers: headers, params: params
-    end
 
-    it 'response is 204 No Content' do
+      expect do
+        post '/reset-password', headers: headers, params: params
+      end.to(change { ActionMailer::Base.deliveries.count }.by(1))
+
       expect(response).to have_http_status(204)
     end
   end
