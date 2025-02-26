@@ -29,13 +29,17 @@ class PasswordResetsController < ActionController::Base
       response.status = :bad_request
       return render json: {
         errors: [
-          {
-            title: 'This password reset link has already been used. If you still need to reset your password, please request a new reset link.' # rubocop:disable Layout/LineLength
-          }
+          # rubocop:disable Layout/LineLength
+          'This password reset link has already been used. If you still need to reset your password, please request a new reset link.'
+          # rubocop:enable Layout/LineLength
         ]
       }
     end
     # check if password is same as current one - try to implement in the model
-    user.update(password: params[:password])
+    begin
+      user.update!(password: params[:password])
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 end
