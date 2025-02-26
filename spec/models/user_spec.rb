@@ -18,6 +18,18 @@ RSpec.describe User, type: :model do
     expect(user.password).to eq('password')
   end
 
+  it 'cannot be created with a password that is too short' do
+    expect { User.create(email: "foo#{SecureRandom.hex(2)}@bar.com", password: 'passwo7') }.to change {
+                                                                                                 User.count
+                                                                                               }.by(0)
+  end
+
+  it 'cannot be created with a password that is too long' do
+    expect { User.create(email: "foo#{SecureRandom.hex(2)}@bar.com", password: SecureRandom.hex(33)) }.to change {
+                                                                                                            User.count
+                                                                                                          }.by(0)
+  end
+
   it 'has a password_changed_at' do
     expect(user.password_changed_at).to be_a(Time)
   end

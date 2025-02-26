@@ -5,6 +5,8 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :name, uniqueness: true, allow_blank: true
   validates :password_changed_at, presence: true
+  validates :password, length: { minimum: ENV['MIN_PASSWORD_LENGTH'].to_i, maximum: ENV['MAX_PASSWORD_LENGTH'].to_i },
+                       allow_nil: true
 
   private
 
