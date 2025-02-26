@@ -23,10 +23,6 @@ RSpec.describe 'POST /reset-password', type: :request do
   end
 
   describe 'email not found' do
-    before :each do
-      ActionMailer::Base.deliveries.clear
-    end
-
     it 'returns 204 No Content and does not send an email' do
       headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
       params = JSON.generate({ email: 'foo@bar.com' })
