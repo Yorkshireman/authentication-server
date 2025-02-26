@@ -11,7 +11,16 @@ RSpec.describe PasswordResetsController, type: :controller do
   end
 
   let(:jwt) do
-    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now, user_id: user.id }, ENV['JWT_SECRET_KEY'], 'HS256')
+    # Time.now + 1 ensures the token is issued after the user's password_changed_at timestamp
+    # and therefore valid
+    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now + 1, user_id: user.id }, ENV['JWT_SECRET_KEY'],
+               'HS256')
+  end
+
+  let(:expired_jwt) do
+    # Time.now - 1 ensures the token is expired
+    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now - 1, user_id: user.id }, ENV['JWT_SECRET_KEY'],
+               'HS256')
   end
 
   describe 'POST #create' do
@@ -42,6 +51,14 @@ RSpec.describe PasswordResetsController, type: :controller do
     it 'returns http success' do
       patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
       expect(response).to have_http_status(:success)
+    end
+
+    describe 'when token has already been used' do
+      it 'returns a bad request status and does not update the user\'s password' do
+        patch :update, params: { token: expired_jwt, password: 'new_password', password_confirmation: 'new_password' }
+        expect(response).to have_http_status(:bad_request)
+        expect(user.password).to eq('password')
+      end
     end
   end
 end

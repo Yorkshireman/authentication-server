@@ -24,8 +24,18 @@ class PasswordResetsController < ActionController::Base
     puts decoded_token
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
-    # if token's issued_at is before password_changed_at, return an error
-    # should check if password is same as old one? Maybe not cos why shouldn't we let them do that?
+
+    if user.password_changed_at > decoded_token[0]['issued_at']
+      response.status = :bad_request
+      return render json: {
+        errors: [
+          {
+            title: 'This password reset link has already been used. If you still need to reset your password, please request a new reset link.' # rubocop:disable Layout/LineLength
+          }
+        ]
+      }
+    end
+    # check if password is same as current one - try to implement in the model
     user.update(password: params[:password])
   end
 end
