@@ -34,15 +34,15 @@
     password.onchange = validatePassword;
     passwordConfirmation.onkeyup = validatePassword;
 
-    // const form = document.querySelector("form[data-remote='true']");
-    // if (form) {
-    //   form.addEventListener("ajax:error", (event) => {
-    //     event.preventDefault();
-    //     const [data, status, xhr] = event.detail;
-    //     console.log("Error response:", status, data);
-    //     // Update the UI accordingly without reloading the page.
-    //     // For example, show an error message to the user.
-    //   });
-    // }
+    const form = document.querySelector("form[data-remote='true']");
+    if (form) {
+      form.addEventListener("ajax:error", (event) => {
+        event.preventDefault();
+        const [data, status, xhr] = event.detail;
+        console.log("Error response:", status, data);
+        // Update the UI accordingly without reloading the page.
+        // For example, show an error message to the user.
+      });
+    }
   });
 </script>
