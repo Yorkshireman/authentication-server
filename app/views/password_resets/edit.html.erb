@@ -1,6 +1,6 @@
 <h1>Reset Your Password</h1>
 
-<%= form_with url: update_password_path, method: :patch, local: true do |form| %>
+<%= form_with url: update_password_path, method: :patch do |form| %>
   <div class="field">
     <%= form.label :password, "New Password" %>
     <%= form.password_field :password, minlength: 8 %>
@@ -33,5 +33,16 @@
 
     password.onchange = validatePassword;
     passwordConfirmation.onkeyup = validatePassword;
+
+    // const form = document.querySelector("form[data-remote='true']");
+    // if (form) {
+    //   form.addEventListener("ajax:error", (event) => {
+    //     event.preventDefault();
+    //     const [data, status, xhr] = event.detail;
+    //     console.log("Error response:", status, data);
+    //     // Update the UI accordingly without reloading the page.
+    //     // For example, show an error message to the user.
+    //   });
+    // }
   });
 </script>
