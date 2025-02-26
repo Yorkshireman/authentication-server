@@ -236,5 +236,46 @@ RSpec.describe 'POST /signup', type: :request do
       end
     end
   end
+
+  describe 'when attempting to create a user with a password that is too short' do
+    before :all do
+      User.destroy_all
+      headers = {
+        'CONTENT_TYPE' => 'application/vnd.api+json'
+      }
+
+      post '/signup', headers: headers, params: JSON.generate({
+        user: {
+          email: 'legit@email.com',
+          name: 'Joe',
+          password: 'short'
+        }
+      })
+    end
+
+    it 'it cannot be created' do
+      expect(User.count).to eq(0)
+    end
+
+    describe 'response' do
+      it 'response is 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'has correct MIME type' do
+        expect(response.media_type).to eq('application/vnd.api+json')
+      end
+
+      it 'response body has error' do
+        expected_body = JSON.generate({
+          errors: [
+            { title: 'Validation failed: Password is too short (minimum is 8 characters)' }
+          ]
+        })
+
+        expect(response.body).to eq(expected_body)
+      end
+    end
+  end
 end
 # rubocop:enable Metrics/BlockLength
