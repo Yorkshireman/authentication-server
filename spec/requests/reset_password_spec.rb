@@ -19,6 +19,8 @@ RSpec.describe 'POST /reset-password', type: :request do
       end.not_to(change { ActionMailer::Base.deliveries.count })
 
       expect(response).to have_http_status(400)
+      expected_body = JSON.generate({ errors: ['param is missing or the value is empty: email'] })
+      expect(response.body).to eq(expected_body)
     end
   end
 

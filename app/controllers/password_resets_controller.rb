@@ -2,11 +2,11 @@ require_relative '../helpers/token_helper'
 
 class PasswordResetsController < ActionController::Base
   include TokenHelper
+  rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
-    email = params.require(:email)
-    user = User.find_by(email: email)
+    user = User.find_by(email: password_reset_create_params)
     if user.nil? then return head :no_content end
 
     token = generate_token({ exp: (Time.now + 7200).to_i, issued_at: Time.now, user_id: user.id })
@@ -21,7 +21,6 @@ class PasswordResetsController < ActionController::Base
 
   def update
     decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
-    puts decoded_token
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
 
@@ -41,5 +40,15 @@ class PasswordResetsController < ActionController::Base
     rescue ActiveRecord::RecordInvalid => e
       render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  private
+
+  def handle_parameter_missing(exception)
+    render json: { errors: [exception.message] }, status: :bad_request
+  end
+
+  def password_reset_create_params
+    params.require(:email)
   end
 end
