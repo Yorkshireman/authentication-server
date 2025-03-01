@@ -87,19 +87,28 @@
       });
 
       form.addEventListener("ajax:complete", () => {
+        event.preventDefault();
         spinner.style.display = "none";
+      });
+
+      form.addEventListener("ajax:success", () => {
+        event.preventDefault();
+        snackbarContainer.style.backgroundColor = "green";
+        snackbarContainer.MaterialSnackbar.showSnackbar({
+          message: "Password successfully reset.",
+          timeout: 8000
+        });
       });
 
       form.addEventListener("ajax:error", event => {
         event.preventDefault();
         const [data, status] = event.detail;
         const message = data.errors[0];
+        snackbarContainer.style.backgroundColor = "rgb(186, 26, 26)";
         snackbarContainer.MaterialSnackbar.showSnackbar({
           message,
           timeout: 8000
         });
-
-        console.error("Error response: ", status, data);
       });
     }
   });
