@@ -74,9 +74,16 @@
 
     const form = document.querySelector("form[data-remote='true']");
     if (form) {
+      const spinner = document.getElementById("submit-spinner");
+
+      form.addEventListener("ajax:beforeSend", function() {
+        spinner.style.display = "inline-block";
+      });
+
       form.addEventListener("ajax:error", (event) => {
         event.preventDefault();
         const [data, status, xhr] = event.detail;
+        spinner.style.display = "none";
         console.log("Error response:", status, data);
         // Update the UI accordingly without reloading the page.
         // For example, show an error message to the user.
