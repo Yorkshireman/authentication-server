@@ -1,22 +1,27 @@
-<h1>Reset Your Password</h1>
+<div class="mdl-layout mdl-js-layout">
+  <main class="mdl-layout__content">
+    <h3>My Wordlist</h3>
+    <h4>Reset Your Password</h4>
 
-<%= form_with url: update_password_path, method: :patch do |form| %>
-  <div class="field">
-    <%= form.label :password, "New Password" %>
-    <%= form.password_field :password, minlength: 8 %>
-  </div>
+    <%= form_with url: update_password_path, method: :patch do |form| %>
+      <div class="field mdl-textfield mdl-js-textfield">
+        <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
+        <%= form.password_field :password, minlength: 8, class: "mdl-textfield__input" %>
+      </div>
 
-  <div class="field">
-    <%= form.label :password_confirmation, "Confirm New Password" %>
-    <%= form.password_field :password_confirmation %>
-  </div>
+      <div class="field mdl-textfield mdl-js-textfield">
+        <%= form.label :password_confirmation, "Confirm New Password", class: "mdl-textfield__label" %>
+        <%= form.password_field :password_confirmation, class: "mdl-textfield__input" %>
+      </div>
 
-  <%= hidden_field_tag :token, params[:token] %>
+      <%= hidden_field_tag :token, params[:token] %>
 
-  <div class="actions">
-    <%= form.submit "Reset Password", class: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" %>
-  </div>
-<% end %>
+      <div class="actions">
+        <%= form.submit "Reset Password", class: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" %>
+      </div>
+    <% end %>
+  </main>
+</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
