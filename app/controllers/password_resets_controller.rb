@@ -3,6 +3,16 @@ require_relative '../helpers/token_helper'
 class PasswordResetsController < ActionController::Base
   include TokenHelper
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
+
+  rescue_from 'JWT::ExpiredSignature' do
+    # rubocop:disable Layout/LineLength
+    message = 'This password reset link has expired. If you still need to reset your password, please request a new reset link.'
+    # rubocop:enable Layout/LineLength
+    response.status = :unprocessable_entity
+    logger.error message
+    render json: { errors: [message] }
+  end
+
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
@@ -20,12 +30,14 @@ class PasswordResetsController < ActionController::Base
   end
 
   def update
+    # check is password and password_confirmation are the same
+
     decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
 
     if user.password_changed_at > decoded_token[0]['issued_at']
-      response.status = :bad_request
+      response.status = :unprocessable_entity
       return render json: {
         errors: [
           # rubocop:disable Layout/LineLength
