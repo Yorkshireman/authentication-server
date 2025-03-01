@@ -59,27 +59,45 @@ RSpec.describe PasswordResetsController, type: :controller do
     end
 
     describe 'when token has already been used' do
-      it 'returns a 422 status and does not update the user\'s password' do
+      before :each do
         patch :update, params: { token: used_jwt, password: 'new_password', password_confirmation: 'new_password' }
+      end
+
+      it 'returns a 422 status' do
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns an appropriate error message' do
         expect(JSON.parse(response.body)['errors'][0]).to eq(
           # rubocop:disable Layout/LineLength
           'This password reset link has already been used. If you still need to reset your password, please request a new reset link.'
           # rubocop:enable Layout/LineLength
         )
+      end
+
+      it 'does not update the user\'s password' do
         expect(user.password).to eq('password')
       end
     end
 
     describe 'when token has expired' do
-      it 'returns a 422 status and does not update the user\'s password' do
+      before :each do
         patch :update, params: { token: expired_jwt, password: 'new_password', password_confirmation: 'new_password' }
+      end
+
+      it 'returns a 422 status' do
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns an appropriate error message' do
         expect(JSON.parse(response.body)['errors'][0]).to eq(
           # rubocop:disable Layout/LineLength
           'This password reset link has expired. If you still need to reset your password, please request a new reset link.'
           # rubocop:enable Layout/LineLength
         )
+      end
+
+      it 'does not update the user\'s password' do
         expect(user.password).to eq('password')
       end
     end
