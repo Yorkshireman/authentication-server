@@ -34,14 +34,20 @@
       </div>
     <% end %>
   </main>
+  <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action" type="button"></button>
+  </div>
 </div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
+    const snackbarContainer = document.querySelector('#demo-toast-example');
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
+    window['counter'] = 0;
 
     togglePassword.addEventListener("click", function() {
       const currentType = password.getAttribute("type");
@@ -84,8 +90,16 @@
         spinner.style.display = "none";
       });
 
+      (function() {
+        // 'use strict';
+      }());
+
       form.addEventListener("ajax:error", (event) => {
         event.preventDefault();
+        'use strict';
+
+        snackbarContainer.MaterialSnackbar.showSnackbar({ message: 'Example Message # ' + ++counter });
+
         const [data, status, xhr] = event.detail;
         console.log("Error response:", status, data);
         // Update the UI accordingly without reloading the page.
