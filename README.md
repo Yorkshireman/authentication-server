@@ -10,7 +10,7 @@
 
 ### Generating an auth token
 
-`bundle exec rake generate_token\[<user_id>\]
+`bundle exec rake generate_token\[<user_id>\]`
 
 eg:
 
@@ -18,7 +18,7 @@ eg:
 
 ### Generating a password reset token
 
-`bundle exec rake generate_password_reset_token\[<user_id>\]
+`bundle exec rake generate_password_reset_token\[<user_id>\]`
 
 eg:
 
