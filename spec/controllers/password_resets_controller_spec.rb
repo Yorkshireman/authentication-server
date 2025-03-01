@@ -56,7 +56,7 @@ RSpec.describe PasswordResetsController, type: :controller do
     describe 'when token has already been used' do
       it 'returns a bad request status and does not update the user\'s password' do
         patch :update, params: { token: expired_jwt, password: 'new_password', password_confirmation: 'new_password' }
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:unprocessable_entity)
         expect(user.password).to eq('password')
       end
     end
