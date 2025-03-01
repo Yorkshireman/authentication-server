@@ -41,16 +41,16 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", () => {
     'use strict'
+    const form = document.querySelector("form[data-remote='true']");
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
     const snackbarContainer = document.querySelector('#demo-toast-example');
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
-    window['counter'] = 0; // can remove once message is being shown
 
-    togglePassword.addEventListener("click", function() {
+    togglePassword.addEventListener("click", () => {
       const currentType = password.getAttribute("type");
       const newType = currentType === "password" ? "text" : "password";
       password.setAttribute("type", newType);
@@ -59,7 +59,7 @@
       icon.textContent = newType === "password" ? "visibility" : "visibility_off";
     });
 
-    togglePasswordConfirmation.addEventListener("click", function() {
+    togglePasswordConfirmation.addEventListener("click", () => {
       const currentType = passwordConfirmation.getAttribute("type");
       const newType = currentType === "password" ? "text" : "password";
       passwordConfirmation.setAttribute("type", newType);
@@ -68,36 +68,38 @@
       icon.textContent = newType === "password" ? "visibility" : "visibility_off";
     });
 
-    function validatePassword() {
+    const validatePassword = () => {
       if (password.value !== passwordConfirmation.value) {
         passwordConfirmation.setCustomValidity("Passwords do not match.");
       } else {
         passwordConfirmation.setCustomValidity("");
       }
-    }
+    };
 
     password.onchange = validatePassword;
     passwordConfirmation.onkeyup = validatePassword;
 
-    const form = document.querySelector("form[data-remote='true']");
     if (form) {
       const spinner = document.getElementById("submit-spinner");
 
-      form.addEventListener("ajax:beforeSend", function() {
+      form.addEventListener("ajax:beforeSend", () => {
         spinner.style.display = "inline-block";
       });
 
-      form.addEventListener("ajax:complete", function() {
+      form.addEventListener("ajax:complete", () => {
         spinner.style.display = "none";
       });
 
-      form.addEventListener("ajax:error", (event) => {
-        'use strict';
+      form.addEventListener("ajax:error", event => {
         event.preventDefault();
-        const [data, status, xhr] = event.detail;
+        const [data, status] = event.detail;
         const message = data.errors[0];
-        snackbarContainer.MaterialSnackbar.showSnackbar({ message, timeout: 10000 });
-        console.log("Error response:", status, data);
+        snackbarContainer.MaterialSnackbar.showSnackbar({
+          message,
+          timeout: 10000
+        });
+
+        console.error("Error response: ", status, data);
       });
     }
   });
