@@ -6,9 +6,9 @@
     <%= form_with url: update_password_path, method: :patch do |form| %>
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
-        <div class="password-wrapper" style="position: relative;">
+        <div class="password-wrapper">
           <%= form.password_field :password, id: "password", minlength: 8, class: "mdl-textfield__input" %>
-          <span id="toggle-password" class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+          <span id="toggle-password" class="toggle-password">
             <i class="material-icons">visibility</i>
           </span>
         </div>
@@ -16,9 +16,9 @@
 
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password_confirmation, "Confirm New Password", class: "mdl-textfield__label" %>
-        <div class="password-wrapper" style="position: relative;">
+        <div class="password-wrapper">
           <%= form.password_field :password_confirmation, class: "mdl-textfield__input" %>
-          <span id="toggle-password-confirmation" class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+          <span id="toggle-password-confirmation" class="toggle-password">
             <i class="material-icons">visibility</i>
           </span>
         </div>
