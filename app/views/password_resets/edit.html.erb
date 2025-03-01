@@ -42,12 +42,13 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+    'use strict'
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
     const snackbarContainer = document.querySelector('#demo-toast-example');
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
-    window['counter'] = 0;
+    window['counter'] = 0; // can remove once message is being shown
 
     togglePassword.addEventListener("click", function() {
       const currentType = password.getAttribute("type");
@@ -90,20 +91,13 @@
         spinner.style.display = "none";
       });
 
-      (function() {
-        // 'use strict';
-      }());
-
       form.addEventListener("ajax:error", (event) => {
-        event.preventDefault();
         'use strict';
-
-        snackbarContainer.MaterialSnackbar.showSnackbar({ message: 'Example Message # ' + ++counter });
-
+        event.preventDefault();
         const [data, status, xhr] = event.detail;
+        const message = data.errors[0];
+        snackbarContainer.MaterialSnackbar.showSnackbar({ message, timeout: 10000 });
         console.log("Error response:", status, data);
-        // Update the UI accordingly without reloading the page.
-        // For example, show an error message to the user.
       });
     }
   });
