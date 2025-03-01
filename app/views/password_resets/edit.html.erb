@@ -6,12 +6,22 @@
     <%= form_with url: update_password_path, method: :patch do |form| %>
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
-        <%= form.password_field :password, minlength: 8, class: "mdl-textfield__input" %>
+        <div class="password-wrapper" style="position: relative;">
+          <%= form.password_field :password, id: "password", minlength: 8, class: "mdl-textfield__input" %>
+          <span id="toggle-password" class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+            <i class="material-icons">visibility</i>
+          </span>
+        </div>
       </div>
 
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password_confirmation, "Confirm New Password", class: "mdl-textfield__label" %>
-        <%= form.password_field :password_confirmation, class: "mdl-textfield__input" %>
+        <div class="password-wrapper" style="position: relative;">
+          <%= form.password_field :password_confirmation, class: "mdl-textfield__input" %>
+          <span id="toggle-password-confirmation" class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+            <i class="material-icons">visibility</i>
+          </span>
+        </div>
       </div>
 
       <%= hidden_field_tag :token, params[:token] %>
@@ -27,6 +37,26 @@
   document.addEventListener("DOMContentLoaded", function() {
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
+    const togglePassword = document.getElementById("toggle-password");
+    const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
+
+    togglePassword.addEventListener("click", function() {
+      const currentType = password.getAttribute("type");
+      const newType = currentType === "password" ? "text" : "password";
+      password.setAttribute("type", newType);
+
+      const icon = this.querySelector("i");
+      icon.textContent = newType === "password" ? "visibility" : "visibility_off";
+    });
+
+    togglePasswordConfirmation.addEventListener("click", function() {
+      const currentType = passwordConfirmation.getAttribute("type");
+      const newType = currentType === "password" ? "text" : "password";
+      passwordConfirmation.setAttribute("type", newType);
+
+      const icon = this.querySelector("i");
+      icon.textContent = newType === "password" ? "visibility" : "visibility_off";
+    });
 
     function validatePassword() {
       if (password.value !== passwordConfirmation.value) {
