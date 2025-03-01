@@ -27,7 +27,10 @@
       <%= hidden_field_tag :token, params[:token] %>
 
       <div class="actions">
-        <%= form.submit "Reset Password", class: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" %>
+        <%= button_tag type: "submit", class: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" do %>
+          <span>Reset Password</span>
+          <span class="mdl-spinner mdl-js-spinner is-active" id="submit-spinner"></span>
+        <% end %>
       </div>
     <% end %>
   </main>
