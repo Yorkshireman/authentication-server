@@ -32,31 +32,17 @@ class PasswordResetsController < ActionController::Base
   def update
     update_params = password_reset_update_params
     validate_update_params(update_params)
-    decoded_token = JWT.decode(update_params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
-    # may want a granular error response for token expiration scenario
-    user = User.find(decoded_token[0]['user_id'])
-    check_if_token_has_already_been_used(user, decoded_token[0]['issued_at'])
+    token_contents = decode_password_reset_token(update_params[:token])[0]
+    user = User.find(token_contents['user_id'])
+    return unless token_not_used?(user, token_contents['issued_at'])
 
-    begin
-      user.update!(password: update_params[:password])
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-    end
+    update_user_password(user, update_params)
   end
 
   private
 
-  def check_if_token_has_already_been_used(user, token_issue_datetime)
-    return unless user.password_changed_at > token_issue_datetime
-
-    response.status = :unprocessable_entity
-    render json: {
-      errors: [
-        # rubocop:disable Layout/LineLength
-        'This password reset link has already been used. If you still need to reset your password, please request a new reset link.'
-        # rubocop:enable Layout/LineLength
-      ]
-    }
+  def decode_password_reset_token(token)
+    JWT.decode(token, ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
   end
 
   def handle_parameter_missing(exception)
@@ -72,6 +58,29 @@ class PasswordResetsController < ActionController::Base
     params.require(:password)
     params.require(:password_confirmation)
     params.permit(:token, :password, :password_confirmation)
+  end
+
+  def token_not_used?(user, token_issue_datetime)
+    if user.password_changed_at > token_issue_datetime
+      response.status = :unprocessable_entity
+      render json: {
+        errors: [
+          # rubocop:disable Layout/LineLength
+          'This password reset link has already been used. If you still need to reset your password, please request a new reset link.'
+          # rubocop:enable Layout/LineLength
+        ]
+      }
+
+      return false
+    end
+
+    true
+  end
+
+  def update_user_password(user, update_params)
+    user.update!(password: update_params[:password])
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def validate_update_params(update_params)
