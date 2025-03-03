@@ -35,17 +35,8 @@ class PasswordResetsController < ActionController::Base
     decoded_token = JWT.decode(update_params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
+    check_if_token_has_already_been_used(user, decoded_token[0]['issued_at'])
 
-    if user.password_changed_at > decoded_token[0]['issued_at']
-      response.status = :unprocessable_entity
-      return render json: {
-        errors: [
-          # rubocop:disable Layout/LineLength
-          'This password reset link has already been used. If you still need to reset your password, please request a new reset link.'
-          # rubocop:enable Layout/LineLength
-        ]
-      }
-    end
     # check if password is same as current one - try to implement in the model
     begin
       user.update!(password: update_params[:password])
@@ -55,6 +46,19 @@ class PasswordResetsController < ActionController::Base
   end
 
   private
+
+  def check_if_token_has_already_been_used(user, token_issue_datetime)
+    return unless user.password_changed_at > token_issue_datetime
+
+    response.status = :unprocessable_entity
+    render json: {
+      errors: [
+        # rubocop:disable Layout/LineLength
+        'This password reset link has already been used. If you still need to reset your password, please request a new reset link.'
+        # rubocop:enable Layout/LineLength
+      ]
+    }
+  end
 
   def handle_parameter_missing(exception)
     render json: { errors: [exception.message] }, status: :bad_request
