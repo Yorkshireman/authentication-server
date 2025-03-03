@@ -101,6 +101,125 @@ RSpec.describe PasswordResetsController, type: :controller do
         expect(user.password).to eq('password')
       end
     end
+
+    describe 'when token is missing' do
+      before :each do
+        patch :update, params: { password: 'new_password', password_confirmation: 'new_password' }
+      end
+
+      it 'returns a 400 status' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq('param is missing or the value is empty: token')
+      end
+
+      it 'does not update the user\'s password' do
+        expect(user.password).to eq('password')
+      end
+    end
+
+    describe 'when password is too short' do
+      before :each do
+        patch :update, params: { token: jwt, password: 'new', password_confirmation: 'new' }
+      end
+
+      it 'returns a 422 status' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq(
+          'Password is too short (minimum is 8 characters)'
+        )
+      end
+
+      it 'does not update the user\'s password' do
+        expect(user.password).to eq('password')
+      end
+    end
+
+    describe 'when password and password confirmation do not match' do
+      before :each do
+        patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password2' }
+      end
+
+      it 'returns a 422 status' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq(
+          'Password and password confirmation do not match.'
+        )
+      end
+
+      it 'does not update the user\'s password' do
+        expect(user.password).to eq('password')
+      end
+    end
+
+    # describe 'when password is the same as the current password' do
+    #   before :each do
+    #     patch :update, params: { token: jwt, password: 'password', password_confirmation: 'password' }
+    #   end
+
+    #   it 'returns a 422 status' do
+    #     expect(response).to have_http_status(:unprocessable_entity)
+    #   end
+
+    #   it 'returns an appropriate error message' do
+    #     expect(JSON.parse(response.body)['errors'][0]).to eq(
+    #       'Password must be different from the current password.'
+    #     )
+    #   end
+
+    #   it 'does not update the user\'s password' do
+    #     expect(user.password).to eq('password')
+    #   end
+    # end
+    #
+
+    describe 'when password_confirmation is missing' do
+      before :each do
+        patch :update, params: { token: jwt, password: 'new_password' }
+      end
+
+      it 'returns a 400 status' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq(
+          'param is missing or the value is empty: password_confirmation'
+        )
+      end
+
+      it 'does not update the user\'s password' do
+        expect(user.password).to eq('password')
+      end
+    end
+
+    describe 'when password is missing' do
+      before :each do
+        patch :update, params: { token: jwt, password_confirmation: 'new_password' }
+      end
+
+      it 'returns a 400 status' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq(
+          'param is missing or the value is empty: password'
+        )
+      end
+
+      it 'does not update the user\'s password' do
+        expect(user.password).to eq('password')
+      end
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

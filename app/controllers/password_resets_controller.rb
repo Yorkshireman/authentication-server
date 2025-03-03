@@ -30,8 +30,7 @@ class PasswordResetsController < ActionController::Base
   end
 
   def update
-    # check is password and password_confirmation are the same
-
+    validate_update_params
     decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
@@ -62,5 +61,19 @@ class PasswordResetsController < ActionController::Base
 
   def password_reset_create_params
     params.require(:email)
+  end
+
+  def validate_update_params
+    params.require(:token)
+    params.require(:password)
+    params.require(:password_confirmation)
+    return unless params[:password] != params[:password_confirmation]
+
+    response.status = :unprocessable_entity
+    render json: {
+      errors: [
+        'Password and password confirmation do not match.'
+      ]
+    }
   end
 end
