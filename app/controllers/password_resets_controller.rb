@@ -31,7 +31,8 @@ class PasswordResetsController < ActionController::Base
 
   def update
     update_params = password_reset_update_params
-    validate_update_params(update_params)
+    return unless password_params_match?(update_params)
+
     token_contents = decode_password_reset_token(update_params[:token])[0]
     user = User.find(token_contents['user_id'])
     return unless token_not_used?(user, token_contents['issued_at'])
@@ -70,8 +71,6 @@ class PasswordResetsController < ActionController::Base
           # rubocop:enable Layout/LineLength
         ]
       }
-
-      return false
     end
 
     true
@@ -83,14 +82,16 @@ class PasswordResetsController < ActionController::Base
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
-  def validate_update_params(update_params)
-    return unless update_params[:password] != update_params[:password_confirmation]
+  def password_params_match?(update_params)
+    if update_params[:password] != update_params[:password_confirmation]
+      response.status = :unprocessable_entity
+      render json: {
+        errors: [
+          'Password and password confirmation do not match.'
+        ]
+      }
+    end
 
-    response.status = :unprocessable_entity
-    render json: {
-      errors: [
-        'Password and password confirmation do not match.'
-      ]
-    }
+    true
   end
 end
