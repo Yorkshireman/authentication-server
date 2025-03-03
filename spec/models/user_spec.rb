@@ -18,16 +18,32 @@ RSpec.describe User, type: :model do
     expect(user.password).to eq('password')
   end
 
-  it 'cannot be created with a password that is too short' do
-    expect { User.create(email: "foo#{SecureRandom.hex(2)}@bar.com", password: 'passwo7') }.to change {
-                                                                                                 User.count
-                                                                                               }.by(0)
+  describe 'password validation' do
+    it 'cannot be created with a password that is too short' do
+      expect do
+        User.create(email: "foo#{SecureRandom.hex(2)}@bar.com", password: 'passwo7')
+      end
+        .to change { User.count }.by(0)
+    end
+
+    it 'raises an error when the new password is the same as the current password' do
+      user.password = 'password'
+      user.password_confirmation = 'password'
+      expect(user).not_to be_valid
+      expect(user.errors[:password]).to include('must be different from your current password.')
+    end
+
+    it 'is valid when the new password is different from the current password' do
+      user.password = 'new_password'
+      user.password_confirmation = 'new_password'
+      expect(user).to be_valid
+    end
   end
 
   it 'cannot be created with a password that is too long' do
-    expect { User.create(email: "foo#{SecureRandom.hex(2)}@bar.com", password: SecureRandom.hex(33)) }.to change {
-                                                                                                            User.count
-                                                                                                          }.by(0)
+    expect do
+      User.create(email: "foo#{SecureRandom.hex(2)}@bar.com", password: SecureRandom.hex(33))
+    end.to change { User.count }.by(0)
   end
 
   it 'has a password_changed_at' do

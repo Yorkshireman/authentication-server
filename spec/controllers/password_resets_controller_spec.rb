@@ -174,25 +174,21 @@ RSpec.describe PasswordResetsController, type: :controller do
       end
     end
 
-    # describe 'when password is the same as the current password' do
-    #   before :each do
-    #     patch :update, params: { token: jwt, password: 'password', password_confirmation: 'password' }
-    #   end
+    describe 'when password is the same as the current password' do
+      before :each do
+        patch :update, params: { token: jwt, password: 'password', password_confirmation: 'password' }
+      end
 
-    #   it 'returns a 422 status' do
-    #     expect(response).to have_http_status(:unprocessable_entity)
-    #   end
+      it 'returns a 422 status' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
-    #   it 'returns an appropriate error message' do
-    #     expect(JSON.parse(response.body)['errors'][0]).to eq(
-    #       'Your new password must be different from your current password.'
-    #     )
-    #   end
-
-    #   it 'does not update the user\'s password' do
-    #     expect(user.password).to eq('password')
-    #   end
-    # end
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq(
+          'Password must be different from your current password.'
+        )
+      end
+    end
 
     describe 'when password_confirmation is missing' do
       before :each do

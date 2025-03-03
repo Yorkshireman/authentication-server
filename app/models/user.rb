@@ -8,7 +8,16 @@ class User < ApplicationRecord
   validates :password, length: { minimum: ENV['MIN_PASSWORD_LENGTH'].to_i, maximum: ENV['MAX_PASSWORD_LENGTH'].to_i },
                        allow_nil: true
 
+  validate :password_must_be_different, if: :will_save_change_to_password_digest?
+
   private
+
+  def password_must_be_different
+    return if password_digest_was.nil? || password_digest_was.empty?
+    return unless BCrypt::Password.new(password_digest_was) == password
+
+    errors.add(:password, 'must be different from your current password.')
+  end
 
   def set_initial_password_changed_at
     self.password_changed_at = Time.current

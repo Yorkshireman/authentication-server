@@ -37,7 +37,6 @@ class PasswordResetsController < ActionController::Base
     user = User.find(decoded_token[0]['user_id'])
     check_if_token_has_already_been_used(user, decoded_token[0]['issued_at'])
 
-    # check if password is same as current one - try to implement in the model
     begin
       user.update!(password: update_params[:password])
     rescue ActiveRecord::RecordInvalid => e
