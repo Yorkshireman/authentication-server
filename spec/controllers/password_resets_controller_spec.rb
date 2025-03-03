@@ -66,6 +66,12 @@ RSpec.describe PasswordResetsController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
+    it 'updates the user\'s password' do
+      patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
+      user.reload
+      expect(user.authenticate('new_password')).to be_truthy
+    end
+
     describe 'when token has already been used' do
       before :each do
         patch :update, params: { token: used_jwt, password: 'new_password', password_confirmation: 'new_password' }
@@ -179,7 +185,7 @@ RSpec.describe PasswordResetsController, type: :controller do
 
     #   it 'returns an appropriate error message' do
     #     expect(JSON.parse(response.body)['errors'][0]).to eq(
-    #       'Password must be different from the current password.'
+    #       'Your new password must be different from your current password.'
     #     )
     #   end
 
@@ -187,7 +193,6 @@ RSpec.describe PasswordResetsController, type: :controller do
     #     expect(user.password).to eq('password')
     #   end
     # end
-    #
 
     describe 'when password_confirmation is missing' do
       before :each do
