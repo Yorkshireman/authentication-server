@@ -2,6 +2,10 @@
 
 `bundle exec rspec`
 
+## Watch tests
+
+`bundle exec guard`
+
 ## Rake tasks
 
 ### Linting

@@ -22,6 +22,8 @@ gem 'sprockets-rails', '~> 3.4'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'guard', '~> 2.19'
+  gem 'guard-rspec', '~> 4.7'
   gem 'rspec-rails', '~> 3.8.2'
 end
 

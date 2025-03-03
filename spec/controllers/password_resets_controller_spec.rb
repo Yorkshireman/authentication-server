@@ -53,6 +53,14 @@ RSpec.describe PasswordResetsController, type: :controller do
   end
 
   describe 'GET #update' do
+    it 'calls params.permit with the correct arguments' do
+      expect_any_instance_of(ActionController::Parameters).to(
+        receive(:permit).with(:token, :password, :password_confirmation).and_call_original
+      )
+
+      patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
+    end
+
     it 'returns http success' do
       patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
       expect(response).to have_http_status(:success)
@@ -218,6 +226,17 @@ RSpec.describe PasswordResetsController, type: :controller do
 
       it 'does not update the user\'s password' do
         expect(user.password).to eq('password')
+      end
+    end
+
+    describe 'when there are extra unexpected params' do
+      before :each do
+        patch :update,
+              params: { token: jwt, password: 'new_password', password_confirmation: 'new_password', extra: 'extra' }
+      end
+
+      it 'returns a 204 status' do
+        expect(response).to have_http_status(:no_content)
       end
     end
   end

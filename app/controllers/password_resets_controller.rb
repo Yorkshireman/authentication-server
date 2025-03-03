@@ -30,8 +30,9 @@ class PasswordResetsController < ActionController::Base
   end
 
   def update
-    validate_update_params
-    decoded_token = JWT.decode(params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
+    update_params = password_reset_update_params
+    validate_update_params(update_params)
+    decoded_token = JWT.decode(update_params[:token], ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
     # may want a granular error response for token expiration scenario
     user = User.find(decoded_token[0]['user_id'])
 
@@ -47,7 +48,7 @@ class PasswordResetsController < ActionController::Base
     end
     # check if password is same as current one - try to implement in the model
     begin
-      user.update!(password: params[:password])
+      user.update!(password: update_params[:password])
     rescue ActiveRecord::RecordInvalid => e
       render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
     end
@@ -63,11 +64,15 @@ class PasswordResetsController < ActionController::Base
     params.require(:email)
   end
 
-  def validate_update_params
+  def password_reset_update_params
     params.require(:token)
     params.require(:password)
     params.require(:password_confirmation)
-    return unless params[:password] != params[:password_confirmation]
+    params.permit(:token, :password, :password_confirmation)
+  end
+
+  def validate_update_params(update_params)
+    return unless update_params[:password] != update_params[:password_confirmation]
 
     response.status = :unprocessable_entity
     render json: {
