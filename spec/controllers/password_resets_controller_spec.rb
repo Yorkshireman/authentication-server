@@ -13,18 +13,18 @@ RSpec.describe PasswordResetsController, type: :controller do
   let(:jwt) do
     # Time.now + 1 ensures the token is issued after the user's password_changed_at timestamp
     # and therefore valid
-    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: (Time.now + 1).to_f, user_id: user.id }, ENV['JWT_SECRET_KEY'],
+    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: (Time.now + 1), user_id: user.id }, ENV['JWT_SECRET_KEY'],
                'HS256')
   end
 
   let(:expired_jwt) do
-    JWT.encode({ exp: (Time.now - 7300).to_i, issued_at: Time.now.to_f, user_id: user.id }, ENV['JWT_SECRET_KEY'],
+    JWT.encode({ exp: (Time.now - 7300).to_i, issued_at: Time.now, user_id: user.id }, ENV['JWT_SECRET_KEY'],
                'HS256')
   end
 
   let(:used_jwt) do
     # Time.now - 1 ensures the token is used
-    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: (Time.now - 1).to_f, user_id: user.id }, ENV['JWT_SECRET_KEY'],
+    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: (Time.now - 1), user_id: user.id }, ENV['JWT_SECRET_KEY'],
                'HS256')
   end
 
