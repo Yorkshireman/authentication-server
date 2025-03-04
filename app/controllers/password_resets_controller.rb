@@ -16,7 +16,7 @@ class PasswordResetsController < ActionController::Base
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
-    user = User.find_by(email: password_reset_create_params)
+    user = User.find_by(password_reset_create_params)
     if user.nil? then return head :no_content end
 
     token = generate_token({ exp: (Time.now + 7200).to_i, issued_at: Time.now, user_id: user.id })
@@ -26,7 +26,6 @@ class PasswordResetsController < ActionController::Base
 
   def edit
     @token = params[:token]
-    puts @token
   end
 
   def update
@@ -37,7 +36,7 @@ class PasswordResetsController < ActionController::Base
     user = User.find(token_contents['user_id'])
     return unless token_not_used?(user, token_contents['issued_at'])
 
-    update_user_password(user, update_params)
+    update_user_password(user, update_params[:password])
   end
 
   private
@@ -52,6 +51,7 @@ class PasswordResetsController < ActionController::Base
 
   def password_reset_create_params
     params.require(:email)
+    params.permit(:email)
   end
 
   def password_reset_update_params
@@ -78,8 +78,8 @@ class PasswordResetsController < ActionController::Base
     true
   end
 
-  def update_user_password(user, update_params)
-    user.update!(password: update_params[:password])
+  def update_user_password(user, new_password)
+    user.update!(password: new_password)
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
