@@ -49,6 +49,21 @@ class PasswordResetsController < ActionController::Base
     render json: { errors: [exception.message] }, status: :bad_request
   end
 
+  def password_params_match?(update_params)
+    if update_params[:password] != update_params[:password_confirmation]
+      response.status = :unprocessable_entity
+      render json: {
+        errors: [
+          'Password and password confirmation do not match.'
+        ]
+      }
+
+      return false
+    end
+
+    true
+  end
+
   def password_reset_create_params
     params.require(:email)
     params.permit(:email)
@@ -82,20 +97,5 @@ class PasswordResetsController < ActionController::Base
     user.update!(password: new_password)
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  end
-
-  def password_params_match?(update_params)
-    if update_params[:password] != update_params[:password_confirmation]
-      response.status = :unprocessable_entity
-      render json: {
-        errors: [
-          'Password and password confirmation do not match.'
-        ]
-      }
-
-      return false
-    end
-
-    true
   end
 end
