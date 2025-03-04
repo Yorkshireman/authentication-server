@@ -19,7 +19,7 @@ class PasswordResetsController < ActionController::Base
     user = User.find_by(email: password_reset_create_params)
     if user.nil? then return head :no_content end
 
-    token = generate_token({ exp: (Time.now + 7200).to_i, issued_at: Time.now, user_id: user.id })
+    token = generate_token({ exp: (Time.now + 7200).to_i, issued_at: Time.now.to_f, user_id: user.id })
     PasswordResetMailer.with(email: user.email, token: token).password_reset_email.deliver_now
     head :no_content
   end
@@ -62,7 +62,7 @@ class PasswordResetsController < ActionController::Base
   end
 
   def token_not_used?(user, token_issue_datetime)
-    if user.password_changed_at > token_issue_datetime
+    if user.password_changed_at.to_f > token_issue_datetime.to_f
       response.status = :unprocessable_entity
       render json: {
         errors: [
@@ -71,6 +71,8 @@ class PasswordResetsController < ActionController::Base
           # rubocop:enable Layout/LineLength
         ]
       }
+
+      return false
     end
 
     true
@@ -90,6 +92,8 @@ class PasswordResetsController < ActionController::Base
           'Password and password confirmation do not match.'
         ]
       }
+
+      return false
     end
 
     true
