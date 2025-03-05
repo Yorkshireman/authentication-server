@@ -34,8 +34,7 @@ class PasswordResetsController < ActionController::Base
     update_params = password_reset_update_params
     return unless password_params_match?(update_params)
 
-    token_contents = decode_password_reset_token(update_params[:token])[0]
-    user = User.find(token_contents['user_id'])
+    user, token_contents = process_token(update_params[:token])
     return unless token_not_used?(user, token_contents['issued_at'])
 
     begin
@@ -48,10 +47,6 @@ class PasswordResetsController < ActionController::Base
   end
 
   private
-
-  def decode_password_reset_token(token)
-    JWT.decode(token, ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
-  end
 
   def handle_parameter_missing(exception)
     render json: { errors: [exception.message] }, status: :bad_request
@@ -82,6 +77,13 @@ class PasswordResetsController < ActionController::Base
     params.require(:password)
     params.require(:password_confirmation)
     params.permit(:token, :password, :password_confirmation)
+  end
+
+  def process_token(token)
+    decoded_token = JWT.decode(token, ENV['JWT_SECRET_KEY'], true, { algorithm: 'HS256' })
+    token_contents = decoded_token[0]
+    user = User.find(token_contents['user_id'])
+    [user, token_contents]
   end
 
   def token_not_used?(user, token_issue_datetime)
