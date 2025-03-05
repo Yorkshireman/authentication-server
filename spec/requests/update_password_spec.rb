@@ -85,5 +85,33 @@ RSpec.describe 'PATCH /reset-password', type: :request do
       expect(response.body).to eq(expected_body)
     end
   end
+
+  describe 'when password is too long' do
+    it 'returns 422 and error message' do
+      token = JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now + 1, user_id: @user.id },
+                         ENV['JWT_SECRET_KEY'], 'HS256')
+      headers = {
+        'CONTENT_TYPE' => 'application/x-www-form-urlencoded; charset=UTF-8'
+      }
+
+      password = SecureRandom.hex(33)
+      patch '/reset-password',  headers: headers,
+                                params: {
+                                  token: token,
+                                  password: password,
+                                  password_confirmation: password
+                                }
+
+      expect(response).to have_http_status(422)
+
+      expected_body = JSON.generate({
+        errors: [
+          'Password is too long (maximum is 64 characters)'
+        ]
+      })
+
+      expect(response.body).to eq(expected_body)
+    end
+  end
 end
 # rubocop:enable Metrics/BlockLength
