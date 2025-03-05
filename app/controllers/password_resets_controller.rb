@@ -53,7 +53,9 @@ class PasswordResetsController < ActionController::Base
     render json: { errors: [exception.message] }, status: :bad_request
   end
 
-  def handle_record_not_found(_exception)
+  def handle_record_not_found(exception)
+    raise exception unless action_name == 'update'
+
     render json: {
       errors: ['User not found. Please try again by requesting another password link.']
     }, status: :not_found
