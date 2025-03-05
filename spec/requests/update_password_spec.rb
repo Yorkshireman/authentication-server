@@ -12,14 +12,27 @@ RSpec.describe 'PATCH /reset-password', type: :request do
 
   describe 'when valid request and params' do
     it 'updates user password and returns 204' do
-      token = JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now + 1, user_id: @user.id },
-                         ENV['JWT_SECRET_KEY'], 'HS256')
+      token = JWT.encode(
+        {
+          exp: (Time.now + 7200).to_i,
+          issued_at: Time.now + 1,
+          user_id: @user.id
+        },
+        ENV['JWT_SECRET_KEY'],
+        'HS256'
+      )
+
       headers = {
         'CONTENT_TYPE' => 'application/x-www-form-urlencoded; charset=UTF-8'
       }
 
-      patch '/reset-password', headers: headers,
-                               params: { token: token, password: 'new_password', password_confirmation: 'new_password' }
+      patch '/reset-password',
+            headers: headers,
+            params: {
+              token: token,
+              password: 'new_password',
+              password_confirmation: 'new_password'
+            }
 
       @user.reload
       expect(@user.authenticate('new_password')).to be_truthy
@@ -30,8 +43,15 @@ RSpec.describe 'PATCH /reset-password', type: :request do
   describe 'when using the same token twice' do
     it 'returns 422 and error message' do
       travel_to(@baseline + 1) do
-        @token = JWT.encode({ exp: (@baseline + 7200).to_i, issued_at: @baseline + 1, user_id: @user.id },
-                            ENV['JWT_SECRET_KEY'], 'HS256')
+        @token = JWT.encode(
+          {
+            exp: (@baseline + 7200).to_i,
+            issued_at: @baseline + 1,
+            user_id: @user.id
+          },
+          ENV['JWT_SECRET_KEY'],
+          'HS256'
+        )
       end
 
       headers = {
@@ -41,12 +61,21 @@ RSpec.describe 'PATCH /reset-password', type: :request do
       travel_to(@baseline + 2.seconds) do
         patch '/reset-password',
               headers: headers,
-              params: { token: @token, password: 'new_password', password_confirmation: 'new_password' }
+              params: {
+                token: @token,
+                password: 'new_password',
+                password_confirmation: 'new_password'
+              }
       end
 
       travel_to(@baseline + 3.seconds) do
-        patch '/reset-password', headers: headers,
-                                 params: { token: @token, password: 'password', password_confirmation: 'password' }
+        patch '/reset-password',
+              headers: headers,
+              params: {
+                token: @token,
+                password: 'password',
+                password_confirmation: 'password'
+              }
 
         expect(response).to have_http_status(422)
 
@@ -65,14 +94,27 @@ RSpec.describe 'PATCH /reset-password', type: :request do
 
   describe 'when new password is too short' do
     it 'returns 422 and error message' do
-      token = JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now + 1, user_id: @user.id },
-                         ENV['JWT_SECRET_KEY'], 'HS256')
+      token = JWT.encode(
+        {
+          exp: (Time.now + 7200).to_i,
+          issued_at: Time.now + 1,
+          user_id: @user.id
+        },
+        ENV['JWT_SECRET_KEY'],
+        'HS256'
+      )
+
       headers = {
         'CONTENT_TYPE' => 'application/x-www-form-urlencoded; charset=UTF-8'
       }
 
-      patch '/reset-password', headers: headers,
-                               params: { token: token, password: 'new', password_confirmation: 'new' }
+      patch '/reset-password',
+            headers: headers,
+            params: {
+              token: token,
+              password: 'new',
+              password_confirmation: 'new'
+            }
 
       expect(response).to have_http_status(422)
 
@@ -88,8 +130,16 @@ RSpec.describe 'PATCH /reset-password', type: :request do
 
   describe 'when password is too long' do
     it 'returns 422 and error message' do
-      token = JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: Time.now + 1, user_id: @user.id },
-                         ENV['JWT_SECRET_KEY'], 'HS256')
+      token = JWT.encode(
+        {
+          exp: (Time.now + 7200).to_i,
+          issued_at: Time.now + 1,
+          user_id: @user.id
+        },
+        ENV['JWT_SECRET_KEY'],
+        'HS256'
+      )
+
       headers = {
         'CONTENT_TYPE' => 'application/x-www-form-urlencoded; charset=UTF-8'
       }
