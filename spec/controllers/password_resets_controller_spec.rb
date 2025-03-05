@@ -28,6 +28,11 @@ RSpec.describe PasswordResetsController, type: :controller do
                'HS256')
   end
 
+  let(:jwt_unknown_user_id) do
+    JWT.encode({ exp: (Time.now + 7200).to_i, issued_at: (Time.now + 1), user_id: 123 }, ENV['JWT_SECRET_KEY'],
+               'HS256')
+  end
+
   describe 'POST #create' do
     it 'returns 200' do
       post :create, params: { email: user.email, user: user }
@@ -248,6 +253,23 @@ RSpec.describe PasswordResetsController, type: :controller do
 
       it 'returns redirect url in the response body' do
         expect(JSON.parse(response.body)).to eq({ 'redirect_url' => 'reset-password/success' })
+      end
+    end
+
+    describe 'when user does not exist' do
+      before :each do
+        patch :update,
+              params: { token: jwt_unknown_user_id, password: 'new_password', password_confirmation: 'new_password' }
+      end
+
+      it 'returns a 404 status' do
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an appropriate error message' do
+        expect(JSON.parse(response.body)['errors'][0]).to eq(
+          'User not found. Please try again by requesting another password link.'
+        )
       end
     end
   end

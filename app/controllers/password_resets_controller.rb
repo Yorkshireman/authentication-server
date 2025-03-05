@@ -3,6 +3,7 @@ require_relative '../helpers/token_helper'
 class PasswordResetsController < ActionController::Base
   include TokenHelper
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
+  rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
   rescue_from 'JWT::ExpiredSignature' do
     # rubocop:disable Layout/LineLength
@@ -50,6 +51,12 @@ class PasswordResetsController < ActionController::Base
 
   def handle_parameter_missing(exception)
     render json: { errors: [exception.message] }, status: :bad_request
+  end
+
+  def handle_record_not_found(_exception)
+    render json: {
+      errors: ['User not found. Please try again by requesting another password link.']
+    }, status: :not_found
   end
 
   def password_params_match?(update_params)
