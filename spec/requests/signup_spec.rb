@@ -145,7 +145,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
-  describe 'when attempting to create a user with a duplicate email' do
+  describe 'when attempting to sign up with a duplicate email' do
     before :all do
       User.destroy_all
       headers = {
@@ -195,7 +195,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
-  describe 'when attempting to create a user with a duplicate name' do
+  describe 'when attempting to sign up with a duplicate name' do
     before :all do
       User.destroy_all
       User.create!(email: 'joebloggs@email.com', name: 'Joe', password: 'password')
@@ -237,7 +237,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
-  describe 'when attempting to create a user with a password that is too short' do
+  describe 'when attempting to sign up with a password that is too short' do
     before :all do
       User.destroy_all
       headers = {
@@ -278,7 +278,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
-  describe 'when attempting to create a user with a password that is too long' do
+  describe 'when attempting to sign up with a password that is too long' do
     before :all do
       User.destroy_all
       headers = {
