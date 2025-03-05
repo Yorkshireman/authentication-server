@@ -23,7 +23,7 @@ RSpec.describe 'PATCH /reset-password', type: :request do
 
       @user.reload
       expect(@user.authenticate('new_password')).to be_truthy
-      expect(response).to have_http_status(204)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -42,8 +42,6 @@ RSpec.describe 'PATCH /reset-password', type: :request do
         patch '/reset-password',
               headers: headers,
               params: { token: @token, password: 'new_password', password_confirmation: 'new_password' }
-
-        expect(response).to have_http_status(204)
       end
 
       travel_to(@baseline + 3.seconds) do

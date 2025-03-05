@@ -28,6 +28,8 @@ class PasswordResetsController < ActionController::Base
     @token = params[:token]
   end
 
+  def success; end
+
   def update
     update_params = password_reset_update_params
     return unless password_params_match?(update_params)
@@ -36,7 +38,13 @@ class PasswordResetsController < ActionController::Base
     user = User.find(token_contents['user_id'])
     return unless token_not_used?(user, token_contents['issued_at'])
 
-    update_user_password(user, update_params[:password])
+    begin
+      user.update!(password: update_params[:password])
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity and return
+    end
+
+    render json: { redirect_url: 'reset-password/success' } and return
   end
 
   private
@@ -91,11 +99,5 @@ class PasswordResetsController < ActionController::Base
     end
 
     true
-  end
-
-  def update_user_password(user, new_password)
-    user.update!(password: new_password)
-  rescue ActiveRecord::RecordInvalid => e
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 end

@@ -29,14 +29,14 @@ RSpec.describe PasswordResetsController, type: :controller do
   end
 
   describe 'POST #create' do
-    it 'returns http success' do
+    it 'returns 200' do
       post :create, params: { email: user.email, user: user }
       expect(response).to have_http_status(:success)
     end
   end
 
   describe 'GET #edit' do
-    it 'returns http success' do
+    it 'returns 200' do
       get :edit
       expect(response).to have_http_status(:success)
     end
@@ -61,9 +61,15 @@ RSpec.describe PasswordResetsController, type: :controller do
       patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
     end
 
-    it 'returns http success' do
+    it 'returns 200' do
       patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
-      expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body)).to eq({ 'redirect_url' => 'reset-password/success' })
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'returns redirect url in the response body' do
+      patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
+      expect(JSON.parse(response.body)).to eq({ 'redirect_url' => 'reset-password/success' })
     end
 
     it 'updates the user\'s password' do
@@ -236,8 +242,12 @@ RSpec.describe PasswordResetsController, type: :controller do
               params: { token: jwt, password: 'new_password', password_confirmation: 'new_password', extra: 'extra' }
       end
 
-      it 'returns a 204 status' do
-        expect(response).to have_http_status(:no_content)
+      it 'returns 200' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns redirect url in the response body' do
+        expect(JSON.parse(response.body)).to eq({ 'redirect_url' => 'reset-password/success' })
       end
     end
   end

@@ -1,3 +1,7 @@
+<% content_for :page_styles do %>
+  <%= stylesheet_link_tag 'password_resets_edit', media: 'all' %>
+<% end %>
+
 <div class="mdl-layout mdl-js-layout">
   <main class="mdl-layout__content">
     <h3>My Wordlist</h3>
@@ -92,17 +96,21 @@
       });
 
       form.addEventListener("ajax:success", () => {
-        event.preventDefault();
-        snackbarContainer.style.backgroundColor = "green";
+        const [data] = event.detail;
+        if (data.redirect_url) {
+          return window.location.href = data.redirect_url;
+        }
+
+        snackbarContainer.style.backgroundColor = "rgb(186, 26, 26)";
         snackbarContainer.MaterialSnackbar.showSnackbar({
-          message: "Password successfully reset.",
-          timeout: 7000
+          message: 'An unknown error occurred. Please try again.',
+          timeout: 10000
         });
       });
 
       form.addEventListener("ajax:error", event => {
         event.preventDefault();
-        const [data, status] = event.detail;
+        const [data] = event.detail;
         const message = data.errors[0];
         snackbarContainer.style.backgroundColor = "rgb(186, 26, 26)";
         snackbarContainer.MaterialSnackbar.showSnackbar({
