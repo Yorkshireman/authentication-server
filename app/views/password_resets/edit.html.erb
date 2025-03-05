@@ -1,0 +1,123 @@
+<% content_for :page_styles do %>
+  <%= stylesheet_link_tag 'password_resets_edit', media: 'all' %>
+<% end %>
+
+<div class="mdl-layout mdl-js-layout">
+  <main class="mdl-layout__content">
+    <h3>My Wordlist</h3>
+    <h4>Reset Your Password</h4>
+
+    <%= form_with url: update_password_path, method: :patch do |form| %>
+      <div class="field mdl-textfield mdl-js-textfield">
+        <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
+        <div class="password-wrapper">
+          <%= form.password_field :password, id: "password", minlength: 8, class: "mdl-textfield__input", required: true %>
+          <span id="toggle-password" class="toggle-password">
+            <i class="material-icons">visibility</i>
+          </span>
+        </div>
+      </div>
+
+      <div class="field mdl-textfield mdl-js-textfield">
+        <%= form.label :password_confirmation, "Confirm New Password", class: "mdl-textfield__label" %>
+        <div class="password-wrapper">
+          <%= form.password_field :password_confirmation, class: "mdl-textfield__input", required: true %>
+          <span id="toggle-password-confirmation" class="toggle-password">
+            <i class="material-icons">visibility</i>
+          </span>
+        </div>
+      </div>
+
+      <%= hidden_field_tag :token, params[:token] %>
+
+      <div class="actions">
+        <%= button_tag type: "submit", class: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" do %>
+          <span>Reset Password</span>
+          <span class="mdl-spinner mdl-js-spinner is-active" id="submit-spinner"></span>
+        <% end %>
+      </div>
+    <% end %>
+  </main>
+  <div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-js-snackbar mdl-snackbar" id="snackbar-container">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action" type="button"></button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    'use strict'
+    const form = document.querySelector("form[data-remote='true']");
+    const password = document.getElementById("password");
+    const passwordConfirmation = document.getElementById("password_confirmation");
+    const snackbarContainer = document.querySelector('#snackbar-container');
+    const togglePassword = document.getElementById("toggle-password");
+    const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
+
+    togglePassword.addEventListener("click", () => {
+      const currentType = password.getAttribute("type");
+      const newType = currentType === "password" ? "text" : "password";
+      password.setAttribute("type", newType);
+
+      const icon = this.querySelector("i");
+      icon.textContent = newType === "password" ? "visibility" : "visibility_off";
+    });
+
+    togglePasswordConfirmation.addEventListener("click", () => {
+      const currentType = passwordConfirmation.getAttribute("type");
+      const newType = currentType === "password" ? "text" : "password";
+      passwordConfirmation.setAttribute("type", newType);
+
+      const icon = this.querySelector("i");
+      icon.textContent = newType === "password" ? "visibility" : "visibility_off";
+    });
+
+    const validatePassword = () => {
+      if (password.value !== passwordConfirmation.value) {
+        passwordConfirmation.setCustomValidity("Passwords do not match.");
+      } else {
+        passwordConfirmation.setCustomValidity("");
+      }
+    };
+
+    password.onchange = validatePassword;
+    passwordConfirmation.onkeyup = validatePassword;
+
+    if (form) {
+      const spinner = document.getElementById("submit-spinner");
+
+      form.addEventListener("ajax:beforeSend", () => {
+        spinner.style.display = "inline-block";
+      });
+
+      form.addEventListener("ajax:complete", () => {
+        event.preventDefault();
+        spinner.style.display = "none";
+      });
+
+      form.addEventListener("ajax:success", () => {
+        const [data] = event.detail;
+        if (data.redirect_url) {
+          return window.location.href = data.redirect_url;
+        }
+
+        snackbarContainer.style.backgroundColor = "rgb(186, 26, 26)";
+        snackbarContainer.MaterialSnackbar.showSnackbar({
+          message: 'An unknown error occurred. Please try again.',
+          timeout: 10000
+        });
+      });
+
+      form.addEventListener("ajax:error", event => {
+        event.preventDefault();
+        const [data] = event.detail;
+        const message = data.errors[0];
+        snackbarContainer.style.backgroundColor = "rgb(186, 26, 26)";
+        snackbarContainer.MaterialSnackbar.showSnackbar({
+          message,
+          timeout: 10000
+        });
+      });
+    }
+  });
+</script>
