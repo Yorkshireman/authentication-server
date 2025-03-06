@@ -1,6 +1,6 @@
 require_relative '../helpers/token_helper'
 
-class UsersController < ApplicationController
+class UsersController < ActionController::API
   include TokenHelper
   rescue_from ActionController::ParameterMissing, with: :render_parameter_missing
 
