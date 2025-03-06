@@ -7,7 +7,7 @@
     <h3>My Wordlist</h3>
     <h4>Reset Your Password</h4>
 
-    <%= form_with url: update_password_path, method: :patch do |form| %>
+    <%= form_with url: api_update_password_path, method: :patch do |form| %>
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
         <div class="password-wrapper">

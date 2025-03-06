@@ -26,7 +26,7 @@ RSpec.describe 'PATCH /reset-password', type: :request do
         'CONTENT_TYPE' => 'application/x-www-form-urlencoded; charset=UTF-8'
       }
 
-      patch '/reset-password',
+      patch '/api/reset-password',
             headers: headers,
             params: {
               token: token,
@@ -59,7 +59,7 @@ RSpec.describe 'PATCH /reset-password', type: :request do
       }
 
       travel_to(@baseline + 2.seconds) do
-        patch '/reset-password',
+        patch '/api/reset-password',
               headers: headers,
               params: {
                 token: @token,
@@ -69,7 +69,7 @@ RSpec.describe 'PATCH /reset-password', type: :request do
       end
 
       travel_to(@baseline + 3.seconds) do
-        patch '/reset-password',
+        patch '/api/reset-password',
               headers: headers,
               params: {
                 token: @token,
@@ -108,7 +108,7 @@ RSpec.describe 'PATCH /reset-password', type: :request do
         'CONTENT_TYPE' => 'application/x-www-form-urlencoded; charset=UTF-8'
       }
 
-      patch '/reset-password',
+      patch '/api/reset-password',
             headers: headers,
             params: {
               token: token,
@@ -145,8 +145,8 @@ RSpec.describe 'PATCH /reset-password', type: :request do
       }
 
       password = SecureRandom.hex(33)
-      patch '/reset-password',  headers: headers,
-                                params: {
+      patch '/api/reset-password', headers: headers,
+                                   params: {
                                   token: token,
                                   password: password,
                                   password_confirmation: password

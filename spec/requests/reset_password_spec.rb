@@ -12,10 +12,8 @@ RSpec.describe 'POST /reset-password', type: :request do
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      post '/reset-password', headers: headers
-
       expect do
-        post '/reset-password', headers: headers
+        post '/api/reset-password', headers: headers
       end.not_to(change { ActionMailer::Base.deliveries.count })
 
       expect(response).to have_http_status(400)
@@ -30,7 +28,7 @@ RSpec.describe 'POST /reset-password', type: :request do
       params = JSON.generate({ email: 'foo@bar.com' })
 
       expect do
-        post '/reset-password', headers: headers, params: params
+        post '/api/reset-password', headers: headers, params: params
       end.not_to(change { ActionMailer::Base.deliveries.count })
 
       expect(response).to have_http_status(204)
@@ -44,10 +42,10 @@ RSpec.describe 'POST /reset-password', type: :request do
       }
 
       params = JSON.generate({ email: 'test@test.com' })
-      post '/reset-password', headers: headers, params: params
+      post '/api/reset-password', headers: headers, params: params
 
       expect do
-        post '/reset-password', headers: headers, params: params
+        post '/api/reset-password', headers: headers, params: params
       end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
       expect(response).to have_http_status(204)
