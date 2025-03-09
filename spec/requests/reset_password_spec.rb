@@ -1,6 +1,6 @@
 require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
-RSpec.describe 'POST /reset-password', type: :request do
+RSpec.describe 'POST /api/reset-password', type: :request do
   before :all do
     User.destroy_all
     @user = User.create(email: 'test@test.com', name: 'test', password: 'password')

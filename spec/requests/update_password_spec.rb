@@ -1,6 +1,6 @@
 require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
-RSpec.describe 'PATCH /reset-password', type: :request do
+RSpec.describe 'PATCH /api/reset-password', type: :request do
   include ActiveSupport::Testing::TimeHelpers
   before :all do
     User.destroy_all

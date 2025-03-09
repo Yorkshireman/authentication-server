@@ -1,7 +1,7 @@
 require 'jwt'
 require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
-RSpec.describe 'POST /signin', type: :request do
+RSpec.describe 'POST /api/signin', type: :request do
   before :all do
     User.destroy_all
     @user = User.create(email: 'test@test.com', name: 'test', password: 'password')
@@ -22,7 +22,7 @@ RSpec.describe 'POST /signin', type: :request do
             user: user_params
           })
 
-          post '/signin', headers: headers, params: params
+          post '/api/signin', headers: headers, params: params
         end
 
         it 'response is 400' do
@@ -58,7 +58,7 @@ RSpec.describe 'POST /signin', type: :request do
           }
         })
 
-        post '/signin', headers: headers, params: params
+        post '/api/signin', headers: headers, params: params
       end
 
       it 'response is 401' do
@@ -89,7 +89,7 @@ RSpec.describe 'POST /signin', type: :request do
           }
         })
 
-        post '/signin', headers: headers, params: params
+        post '/api/signin', headers: headers, params: params
       end
 
       it 'response is 401' do
@@ -124,7 +124,7 @@ RSpec.describe 'POST /signin', type: :request do
 
       freeze_time do
         @time_now = Time.now
-        post '/signin', headers: headers, params: params
+        post '/api/signin', headers: headers, params: params
       end
     end
 

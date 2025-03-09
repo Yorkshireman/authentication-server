@@ -1,7 +1,7 @@
 require 'jwt'
 require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
-RSpec.describe 'POST /signup', type: :request do
+RSpec.describe 'POST /api/signup', type: :request do
   describe 'when invalid params' do
     let(:user) { User.first }
     describe 'missing parameter' do
@@ -25,7 +25,7 @@ RSpec.describe 'POST /signup', type: :request do
             user: user_params
           })
 
-          post '/signup', headers: headers, params: params
+          post '/api/signup', headers: headers, params: params
         end
 
         it 'response is 400' do
@@ -73,7 +73,7 @@ RSpec.describe 'POST /signup', type: :request do
 
       freeze_time do
         @time_now = Time.now
-        post '/signup', headers: headers, params: params
+        post '/api/signup', headers: headers, params: params
       end
     end
 
@@ -135,9 +135,9 @@ RSpec.describe 'POST /signup', type: :request do
         }
       }
 
-      post '/signup', headers: headers, params: JSON.generate(params)
+      post '/api/signup', headers: headers, params: JSON.generate(params)
       params[:user][:email] = 'testuser2@email.com'
-      post '/signup', headers: headers, params: JSON.generate(params)
+      post '/api/signup', headers: headers, params: JSON.generate(params)
     end
 
     it 'has 201 status code' do
@@ -160,8 +160,8 @@ RSpec.describe 'POST /signup', type: :request do
         }
       })
 
-      post '/signup', headers: headers, params: params
-      post '/signup', headers: headers, params: JSON.generate({
+      post '/api/signup', headers: headers, params: params
+      post '/api/signup', headers: headers, params: JSON.generate({
         user: {
           email: 'testuser@email.com',
           name: 'Mr Foobar',
@@ -203,7 +203,7 @@ RSpec.describe 'POST /signup', type: :request do
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      post '/signup', headers: headers, params: JSON.generate({
+      post '/api/signup', headers: headers, params: JSON.generate({
         user: {
           email: 'legit@email.com',
           name: 'Joe',
@@ -244,7 +244,7 @@ RSpec.describe 'POST /signup', type: :request do
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      post '/signup', headers: headers, params: JSON.generate({
+      post '/api/signup', headers: headers, params: JSON.generate({
         user: {
           email: 'legit@email.com',
           name: 'Joe',
@@ -285,7 +285,7 @@ RSpec.describe 'POST /signup', type: :request do
         'CONTENT_TYPE' => 'application/vnd.api+json'
       }
 
-      post '/signup', headers: headers, params: JSON.generate({
+      post '/api/signup', headers: headers, params: JSON.generate({
         user: {
           email: 'legit@email.com',
           name: 'Joe',
