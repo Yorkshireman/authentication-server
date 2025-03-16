@@ -67,6 +67,12 @@
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
 
+    form.addEventListener('submit', function() {
+      if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+      }
+    });
+
     submitButton.addEventListener("touchend", () => {
       form.requestSubmit();
     });
