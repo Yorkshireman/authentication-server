@@ -63,6 +63,7 @@
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
     const snackbarContainer = document.querySelector('#snackbar-container');
+    let submissionInProgress = false;
     const submitButton = document.querySelector(".actions button");
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
@@ -74,8 +75,13 @@
     });
 
     submitButton.addEventListener("touchend", (e) => {
-      form.requestSubmit();
       e.preventDefault();
+      if (submissionInProgress) {
+        return;
+      }
+
+      form.requestSubmit();
+      submissionInProgress = true;
     });
 
     togglePassword.addEventListener("click", function() {
@@ -117,6 +123,7 @@
       form.addEventListener("ajax:complete", () => {
         event.preventDefault();
         spinner.style.display = "none";
+        submissionInProgress = false;
       });
 
       form.addEventListener("ajax:success", () => {
