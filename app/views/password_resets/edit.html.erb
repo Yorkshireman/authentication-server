@@ -73,8 +73,9 @@
       }
     });
 
-    submitButton.addEventListener("touchend", () => {
+    submitButton.addEventListener("touchend", (e) => {
       form.requestSubmit();
+      e.preventDefault();
     });
 
     togglePassword.addEventListener("click", function() {
