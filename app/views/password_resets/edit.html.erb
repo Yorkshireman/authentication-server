@@ -11,7 +11,14 @@
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
         <div class="password-wrapper">
-          <%= form.password_field :password, id: "password", minlength: 8, class: "mdl-textfield__input", required: true %>
+          <%=
+            form.password_field :password,
+            autocapitalize: "none",
+            class: "mdl-textfield__input",
+            id: "password",
+            minlength: 8,
+            required: true
+          %>
           <span id="toggle-password" class="toggle-password">
             <i class="material-icons">visibility</i>
           </span>
@@ -21,7 +28,12 @@
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password_confirmation, "Confirm New Password", class: "mdl-textfield__label" %>
         <div class="password-wrapper">
-          <%= form.password_field :password_confirmation, class: "mdl-textfield__input", required: true %>
+          <%=
+            form.password_field :password_confirmation,
+            autocapitalize: "none",
+            class: "mdl-textfield__input",
+            required: true
+          %>
           <span id="toggle-password-confirmation" class="toggle-password">
             <i class="material-icons">visibility</i>
           </span>
@@ -51,10 +63,21 @@
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
     const snackbarContainer = document.querySelector('#snackbar-container');
+    const submitButton = document.querySelector(".actions button");
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
 
-    togglePassword.addEventListener("click", () => {
+    form.addEventListener('submit', function() {
+      if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+      }
+    });
+
+    submitButton.addEventListener("touchend", () => {
+      form.requestSubmit();
+    });
+
+    togglePassword.addEventListener("click", function() {
       const currentType = password.getAttribute("type");
       const newType = currentType === "password" ? "text" : "password";
       password.setAttribute("type", newType);
@@ -63,7 +86,7 @@
       icon.textContent = newType === "password" ? "visibility" : "visibility_off";
     });
 
-    togglePasswordConfirmation.addEventListener("click", () => {
+    togglePasswordConfirmation.addEventListener("click", function() {
       const currentType = passwordConfirmation.getAttribute("type");
       const newType = currentType === "password" ? "text" : "password";
       passwordConfirmation.setAttribute("type", newType);
