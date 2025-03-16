@@ -51,8 +51,13 @@
     const password = document.getElementById("password");
     const passwordConfirmation = document.getElementById("password_confirmation");
     const snackbarContainer = document.querySelector('#snackbar-container');
+    const submitButton = document.querySelector(".actions button");
     const togglePassword = document.getElementById("toggle-password");
     const togglePasswordConfirmation = document.getElementById("toggle-password-confirmation");
+
+    submitButton.addEventListener("touchend", () => {
+      form.requestSubmit();
+    });
 
     togglePassword.addEventListener("click", () => {
       const currentType = password.getAttribute("type");
