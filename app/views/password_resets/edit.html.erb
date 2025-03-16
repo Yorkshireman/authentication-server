@@ -59,7 +59,7 @@
       form.requestSubmit();
     });
 
-    togglePassword.addEventListener("click", () => {
+    togglePassword.addEventListener("click", function() {
       const currentType = password.getAttribute("type");
       const newType = currentType === "password" ? "text" : "password";
       password.setAttribute("type", newType);
@@ -68,7 +68,7 @@
       icon.textContent = newType === "password" ? "visibility" : "visibility_off";
     });
 
-    togglePasswordConfirmation.addEventListener("click", () => {
+    togglePasswordConfirmation.addEventListener("click", function() {
       const currentType = passwordConfirmation.getAttribute("type");
       const newType = currentType === "password" ? "text" : "password";
       passwordConfirmation.setAttribute("type", newType);
