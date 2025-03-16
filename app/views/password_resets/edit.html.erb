@@ -11,7 +11,14 @@
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password, "New Password", class: "mdl-textfield__label" %>
         <div class="password-wrapper">
-          <%= form.password_field :password, id: "password", minlength: 8, class: "mdl-textfield__input", required: true %>
+          <%=
+            form.password_field :password,
+            autocapitalize: "none",
+            class: "mdl-textfield__input",
+            id: "password",
+            minlength: 8,
+            required: true
+          %>
           <span id="toggle-password" class="toggle-password">
             <i class="material-icons">visibility</i>
           </span>
@@ -21,7 +28,12 @@
       <div class="field mdl-textfield mdl-js-textfield">
         <%= form.label :password_confirmation, "Confirm New Password", class: "mdl-textfield__label" %>
         <div class="password-wrapper">
-          <%= form.password_field :password_confirmation, class: "mdl-textfield__input", required: true %>
+          <%=
+            form.password_field :password_confirmation,
+            autocapitalize: "none",
+            class: "mdl-textfield__input",
+            required: true
+          %>
           <span id="toggle-password-confirmation" class="toggle-password">
             <i class="material-icons">visibility</i>
           </span>
