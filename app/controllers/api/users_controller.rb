@@ -2,7 +2,9 @@ require_relative '../../helpers/token_helper'
 
 module Api
   class UsersController < ActionController::API
+    before_action :validate_password_length, only: :signup
     include TokenHelper
+    MAX_PASSWORD_LENGTH = ENV['MAX_PASSWORD_LENGTH'].presence&.to_i || 64
     rescue_from ActionController::ParameterMissing, with: :render_parameter_missing
 
     def signin
@@ -55,6 +57,16 @@ module Api
           user_params.require(p)
         end
       end
+    end
+
+    def validate_password_length
+      password = user_params[:password]
+      return unless password && password.length > MAX_PASSWORD_LENGTH
+
+      render_error_response(
+        403,
+        "Validation failed: Password is too long (maximum is #{MAX_PASSWORD_LENGTH} characters)."
+      )
     end
   end
 end

@@ -310,7 +310,7 @@ RSpec.describe 'POST /api/signup', type: :request do
       it 'response body has error' do
         expected_body = JSON.generate({
           errors: [
-            { title: 'Validation failed: Password is too long (maximum is 64 characters)' }
+            { title: 'Validation failed: Password is too long (maximum is 64 characters).' }
           ]
         })
 
