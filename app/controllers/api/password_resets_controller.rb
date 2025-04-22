@@ -1,6 +1,8 @@
 module Api
   class PasswordResetsController < ActionController::API
+    before_action :validate_password_length, only: :update
     include TokenHelper
+    MAX_PASSWORD_LENGTH = ENV['MAX_PASSWORD_LENGTH'].presence&.to_i || 64
     rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
     rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
@@ -101,6 +103,17 @@ module Api
       end
 
       true
+    end
+
+    def validate_password_length
+      password = password_reset_update_params[:password]
+      return unless password && password.length > MAX_PASSWORD_LENGTH
+
+      render json: {
+        errors: [
+          "Password is too long (maximum is #{MAX_PASSWORD_LENGTH} characters)"
+        ]
+      }, status: :unprocessable_entity
     end
   end
 end

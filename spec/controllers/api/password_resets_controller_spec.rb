@@ -42,7 +42,9 @@ RSpec.describe Api::PasswordResetsController, type: :controller do
   describe 'GET #update' do
     it 'calls params.permit with the correct arguments' do
       expect_any_instance_of(ActionController::Parameters).to(
-        receive(:permit).with(:token, :password, :password_confirmation).and_call_original
+        receive(:permit).with(:token, :password, :password_confirmation)
+        .at_least(:once)
+        .and_call_original
       )
 
       patch :update, params: { token: jwt, password: 'new_password', password_confirmation: 'new_password' }
